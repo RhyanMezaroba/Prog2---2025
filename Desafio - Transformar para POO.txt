@@ -1,0 +1,40 @@
+// Código PHP estruturado
+$preco = 100;
+$desconto = 0.1;
+$final = $preco - ($preco * $desconto);
+echo $final;
+// Resultado: 90
+
+Variáveis:
+$preco
+$desconto
+$final
+
+Desafio:
+
+1 QUAL SERIA A CLASSE?
+Classe PRODUTO
+
+2 QUAIS ATRIBUTOS E MÉTODOS?
+Temos as variáveis ($preco, $desconto, $final)
+As operações são sequenciais. Entregando um valor para $preco e $desconto. Faz um cálculo entre o valor do $preco MENOS o seu $desconto
+
+3 ESBOCE A ESTRUTURA OOP CORRESPONDENTE
+<?php
+class Produto {
+    public $preco;
+    public $desconto;
+    
+    public function precoFinal() {
+        return $this->preco - ($this->preco * $this->desconto);
+    }
+}
+
+$frase = 'O valor do Refri é ';
+$refrigerante = new Produto();
+$refrigerante->preco = 100;
+$refrigerante->desconto = 0.1;
+
+echo $frase . $refrigerante->precoFinal();
+?>
+
