@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnHub - Plataforma de Ensino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.iife.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .learning-path-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #667eea;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="book-open" class="h-8 w-8 text-indigo-600"></i>
+                        <span class="ml-2 text-xl font-bold text-indigo-600">LearnHub</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:space-x-8">
+                    <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Início</a>
+                    <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Cursos</a>
+                    <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Roteiros</a>
+                    <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Sobre</a>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">Entrar</button>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false">
+                        <i data-feather="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                    Transforme seu aprendizado
+                </h1>
+                <p class="mt-6 max-w-lg mx-auto text-xl">
+                    Aprenda com os melhores cursos gratuitos e premium, e siga roteiros de aprendizado personalizados.
+                </p>
+                <div class="mt-10 flex justify-center space-x-4">
+                    <a href="#" class="bg-white text-indigo-600 px-8 py-3 rounded-md text-base font-medium hover:bg-gray-100 md:py-4 md:text-lg md:px-10">
+                        Explorar Cursos
+                    </a>
+                    <a href="#" class="bg-indigo-600 bg-opacity-80 hover:bg-opacity-100 text-white px-8 py-3 rounded-md text-base font-medium md:py-4 md:text-lg md:px-10">
+                        Criar Roteiro
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Courses Section -->
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                Nossos Cursos
+            </h2>
+            <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                Escolha entre cursos gratuitos ou premium para impulsionar sua carreira.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Free Course Card -->
+            <div class="course-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ease-in-out">
+                <div class="bg-indigo-100 p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-indigo-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded">GRATUITO</span>
+                        <div class="flex items-center text-yellow-400">
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <span class="ml-1 text-gray-700">4.8</span>
+                        </div>
+                    </div>
+                    <h3 class="mt-2 text-lg font-semibold text-gray-900">Introdução ao JavaScript</h3>
+                    <p class="mt-1 text-sm text-gray-500">Aprenda os fundamentos da programação com JavaScript</p>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                        <span>8 horas</span>
+                        <i data-feather="user" class="w-4 h-4 ml-3 mr-1"></i>
+                        <span>Iniciante</span>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium">Ver Curso</button>
+                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm font-medium">Inscrever-se</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Course Card -->
+            <div class="course-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ease-in-out">
+                <div class="bg-purple-100 p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-purple-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded">PREMIUM</span>
+                        <div class="flex items-center text-yellow-400">
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <span class="ml-1 text-gray-700">4.9</span>
+                        </div>
+                    </div>
+                    <h3 class="mt-2 text-lg font-semibold text-gray-900">React Avançado</h3>
+                    <p class="mt-1 text-sm text-gray-500">Domine React com Hooks, Context API e Redux</p>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                        <span>20 horas</span>
+                        <i data-feather="user" class="w-4 h-4 ml-3 mr-1"></i>
+                        <span>Avançado</span>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="text-lg font-bold text-gray-900">R$ 199,90</span>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-md text-sm font-medium">Comprar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Course Card -->
+            <div class="course-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ease-in-out">
+                <div class="bg-green-100 p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-green-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded">GRATUITO</span>
+                        <div class="flex items-center text-yellow-400">
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <span class="ml-1 text-gray-700">4.7</span>
+                        </div>
+                    </div>
+                    <h3 class="mt-2 text-lg font-semibold text-gray-900">CSS Moderno</h3>
+                    <p class="mt-1 text-sm text-gray-500">Aprenda Flexbox, Grid e animações CSS</p>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                        <span>10 horas</span>
+                        <i data-feather="user" class="w-4 h-4 ml-3 mr-1"></i>
+                        <span>Intermediário</span>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <button class="text-green-600 hover:text-green-800 font-medium">Ver Curso</button>
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium">Inscrever-se</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-10 text-center">
+            <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                Ver todos os cursos
+                <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Learning Paths Section -->
+    <div class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Roteiros de Aprendizado
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    Siga um caminho estruturado para dominar qualquer tecnologia.
+                </p>
+            </div>
+
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        Desenvolvedor Front-end
+                    </h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                        De iniciante a especialista em 6 meses
+                    </p>
+                </div>
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="space-y-8">
+                        <!-- Step 1 -->
+                        <div class="relative pl-6 learning-path-step">
+                            <div class="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-indigo-600"></div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-indigo-100 rounded-md p-2">
+                                    <i data-feather="book" class="h-5 w-5 text-indigo-600"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-lg font-medium text-gray-900">Fundamentos da Web</h4>
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        HTML5, CSS3 e JavaScript básico (4 semanas)
+                                    </p>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Gratuito</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">3 cursos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative pl-6 learning-path-step">
+                            <div class="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-indigo-600"></div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-indigo-100 rounded-md p-2">
+                                    <i data-feather="code" class="h-5 w-5 text-indigo-600"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-lg font-medium text-gray-900">Frameworks Front-end</h4>
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        React, Vue ou Angular (8 semanas)
+                                    </p>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Premium</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">5 cursos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative pl-6 learning-path-step">
+                            <div class="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-indigo-600"></div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-indigo-100 rounded-md p-2">
+                                    <i data-feather="tool" class="h-5 w-5 text-indigo-600"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-lg font-medium text-gray-900">Ferramentas Avançadas</h4>
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        Webpack, TypeScript e Testes (6 semanas)
+                                    </p>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Premium</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">4 cursos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-4 py-4 bg-gray-50 text-right sm:px-6">
+                    <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Começar Roteiro
+                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg font-medium text-gray-900">Desenvolvedor Back-end</h3>
+                        <p class="mt-1 text-sm text-gray-500">Node.js, Python ou Java</p>
+                        <div class="mt-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Premium</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                        <div class="text-sm">
+                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> Ver detalhes<span class="sr-only">Desenvolvedor Back-end</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg font-medium text-gray-900">Data Science</h3>
+                        <p class="mt-1 text-sm text-gray-500">Python, Pandas e Machine Learning</p>
+                        <div class="mt-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Premium</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                        <div class="text-sm">
+                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> Ver detalhes<span class="sr-only">Data Science</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg font-medium text-gray-900">UX/UI Design</h3>
+                        <p class="mt-1 text-sm text-gray-500">Figma, Prototipagem e Design Thinking</p>
+                        <div class="mt-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Gratuito</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                        <div class="text-sm">
+                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> Ver detalhes<span class="sr-only">UX/UI Design</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                O que nossos alunos dizem
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i data-feather="user" class="h-5 w-5 text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-sm font-medium text-gray-900">Ana Silva</h4>
+                        <div class="flex mt-1 text-yellow-400">
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-500">
+                    "Os roteiros de aprendizado me ajudaram a me organizar e não perder tempo pulando de curso em curso sem direção."
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i data-feather="user" class="h-5 w-5 text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-sm font-medium text-gray-900">Carlos Oliveira</h4>
+                        <div class="flex mt-1 text-yellow-400">
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-500">
+                    "Consegui meu primeiro emprego como desenvolvedor depois de completar o roteiro de Front-end. Os cursos são excelentes!"
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i data-feather="user" class="h-5 w-5 text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-sm font-medium text-gray-900">Mariana Costa</h4>
+                        <div class="flex mt-1 text-yellow-400">
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-500">
+                    "A combinação de cursos gratuitos e premium permite que eu aprenda sem gastar muito, mas com qualidade quando preciso."
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="gradient-bg">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                    Pronto para transformar sua carreira?
+                </h2>
+                <p class="mt-6 max-w-2xl mx-auto text-xl text-indigo-100">
+                    Comece hoje mesmo seu aprendizado com nossos cursos e roteiros.
+                </p>
+                <div class="mt-8 flex justify-center">
+                    <div class="inline-flex rounded-md shadow">
+                        <a href="#" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50">
+                            Criar Conta Gratuita
+                            <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Cursos</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Todos os cursos</a></li>
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Gratuitos</a></li>
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Premium</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Roteiros</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Front-end</a></li>
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Back-end</a></li>
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Data Science</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Empresa</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Sobre</a></li>
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Carreiras</a></li>
+                        <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Redes Sociais</h3>
+                    <div class="mt-4 flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i data-feather="facebook" class="h-6 w-6"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i data-feather="instagram" class="h-6 w-6"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i data-feather="twitter" class="h-6 w-6"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i data-feather="youtube" class="h-6 w-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-200 pt-8">
+                <p class="text-base text-gray-400 text-center">
+                    &copy; 2023 LearnHub. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>AOS.init();</script>
+    <script>const { animate } = anime;</script>
+    <script>feather.replace();</script>
+</body>
+</html>
