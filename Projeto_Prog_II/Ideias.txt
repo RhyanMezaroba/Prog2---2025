@@ -1,0 +1,3 @@
+prompt:
+
+Estou criando um sistema para Criar, monitorar e gerenciar Doações Públicas para a Comunidade Brasileira. O sistema é basicamente receber a doação seja ela em dinheiro ou material físico, de instituições, pessoas, empresas ou anonimamente. Sendo assim preciso editar o meu Modelo de Requisitos do Sistema e quero sua ajuda

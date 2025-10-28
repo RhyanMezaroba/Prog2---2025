@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Doações - DoaSys</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+    <custom-navbar></custom-navbar>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                        <i data-feather="list" class="inline mr-3"></i>
+                        Lista de Doações
+                    </h1>
+                    <p class="text-lg text-gray-600">Gerencie e visualize todas as doações cadastradas</p>
+                </div>
+                
+                <a href="/cadastro.html" class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 mt-4 sm:mt-0">
+                        <i data-feather="plus" class="inline mr-2"></i>
+                        Nova Doação
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8 card-hover">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-input">
+                            <option value="">Todos os tipos</option>
+                            <option value="alimentos">Alimentos</option>
+                            <option value="roupas">Roupas</option>
+                            <option value="medicamentos">Medicamentos</option>
+                            <option value="dinheiro">Dinheiro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Data Inicial</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Data Final</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-4 mt-4">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                        <i data-feather="filter" class="inline mr-2"></i>
+                        Aplicar Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista de Doações -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Doação 1 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                            Entregue
+                        </span>
+                        <span class="ml-2 inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                Alimentos
+                            </span>
+                        </div>
+                        <button class="text-gray-400 hover:text-primary transition duration-300">
+                            <i data-feather="more-vertical"></i>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Doação de Cesta Básica</h3>
+                    <p class="text-gray-600 mb-4">Família Silva - Zona Sul</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-500">Doador</p>
+                            <p class="font-medium">Supermercado Bom Preço</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500">Valor</p>
+                            <p class="font-medium">R$ 150,00</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500">Data</p>
+                            <p class="font-medium">15/12/2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doação 2 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                            Pendente
+                        </span>
+                        <span class="ml-2 inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                                Roupas
+                            </span>
+                        </div>
+                        <button class="text-gray-400 hover:text-primary transition duration-300">
+                            <i data-feather="more-vertical"></i>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Doação de Roupas de Inverno</h3>
+                    <p class="text-gray-600 mb-4">Creche Esperança - Centro</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-500">Doador</p>
+                            <p class="font-medium">Maria Santos</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500">Quantidade</p>
+                            <p class="font-medium">25 peças</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500">Data</p>
+                            <p class="font-medium">18/12/2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doação 3 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                                Cancelada
+                            </span>
+                            <span class="ml-2 inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                    Medicamentos
+                                </span>
+                            </div>
+                            <button class="text-gray-400 hover:text-primary transition duration-300">
+                                    <i data-feather="more-vertical"></i>
+                                </button>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Doação de Medicamentos</h3>
+                            <p class="text-gray-600 mb-4">Hospital Municipal - Zona Leste</p>
+                            
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500">Doador</p>
+                                <p class="font-medium">Farmácia Popular</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-gray-500">Valor</p>
+                                <p class="font-medium">R$ 320,00</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-gray-500">Data</p>
+                                <p class="font-medium">20/12/2024</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Doação 4 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                    Entregue
+                                </span>
+                                <span class="ml-2 inline-block px-3 py-1 bg-accent text-white rounded-full text-sm font-medium">
+                                    Dinheiro
+                                </span>
+                            </div>
+                            <button class="text-gray-400 hover:text-primary transition duration-300">
+                                    <i data-feather="more-vertical"></i>
+                                </button>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Doação em Dinheiro</h3>
+                            <p class="text-gray-600 mb-4">Associação Comunitária - Zona Norte</p>
+                            
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500">Doador</p>
+                                <p class="font-medium">Empresa ABC Ltda</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-gray-500">Valor</p>
+                                <p class="font-medium">R$ 1.000,00</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-gray-500">Data</p>
+                                <p class="font-medium">22/12/2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paginação -->
+                <div class="flex justify-center mt-12">
+                    <nav class="flex items-center gap-2">
+                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                        <i data-feather="chevron-left"></i>
+                    </button>
+                    
+                    <button class="px-3 py-2 bg-primary text-white rounded-lg font-medium">
+                            1
+                        </button>
+                        
+                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                        2
+                    </button>
+                    
+                    <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                        3
+                    </button>
+                    
+                    <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                        <i data-feather="chevron-right"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </main>
+
+    <custom-footer></custom-footer>
+
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="script.js"></script>
+    <script>
+        feather.replace();
+        
+        // Simulação de dados
+        const doacoes = [
+            {
+                id: 1,
+                tipo: 'alimentos',
+                descricao: 'Doação de Cesta Básica',
+                doador: 'Supermercado Bom Preço',
+                beneficiario: 'Família Silva - Zona Sul',
+                valor: 150.00,
+                data: '2024-12-15',
+                status: 'entregue'
+            },
+            {
+                id: 2,
+                tipo: 'roupas',
+                descricao: 'Doação de Roupas de Inverno',
+                doador: 'Maria Santos',
+                beneficiario: 'Creche Esperança - Centro',
+                quantidade: 25,
+                data: '2024-12-18',
+                status: 'pendente'
+            }
+        ];
+
+        // Função para carregar doações
+        function carregarDoacoes() {
+            const container = document.querySelector('.grid.grid-cols-1.lg\\:grid-cols-2');
+        
+        // Aqui você implementaria a lógica para carregar as doações da API
+        console.log('Carregando doações...', doacoes);
+        }
+        
+        carregarDoacoes();
+    </script>
+</body>
+</html>
