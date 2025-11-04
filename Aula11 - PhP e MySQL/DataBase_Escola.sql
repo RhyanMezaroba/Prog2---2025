@@ -1,0 +1,21 @@
+-- Criar banco de dados
+CREATE DATABASE IF NOT EXISTS escola
+
+CHARACTER SET utf8mb4
+
+COLLATE utf8mb4_unicode_ci;
+
+USE escola;
+
+-- Criar tabela de alunos
+CREATE TABLE alunos (
+id INT AUTO_INCREMENT PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+idade INT NOT NULL,
+email VARCHAR(100) UNIQUE NOT NULL,
+curso VARCHAR(50) NOT NULL,
+data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+INDEX idx_nome (nome),
+INDEX idx_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
