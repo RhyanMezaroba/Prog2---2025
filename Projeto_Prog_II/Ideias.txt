@@ -1,3 +1,9 @@
 prompt:
 
-Estou criando um sistema para Criar, monitorar e gerenciar Doações Públicas para a Comunidade Brasileira. O sistema é basicamente receber a doação seja ela em dinheiro ou material físico, de instituições, pessoas, empresas ou anonimamente. Sendo assim preciso editar o meu Modelo de Requisitos do Sistema e quero sua ajuda
+Preciso criar um site MVC (Model, View, Controller) sobre doações na comunidade Brasileira. Nome do sistema DoaSys. Esse sistema vai conter as funções de CADASTRAR, GERENCIAR, EDITAR doações na comunidade Brasileira. Deve conter 3 tipos de usuários, ADMIN, CLIENTE e ANÔNIMO. Onde O ADMIN consegue fazer o controle, cadastro e gerenciamento dos usuários.
+
+Preciso de ajuda para criar esse site. Linguagem em PhP e HTML para views.
+
+Esse site, vai ser utilizado para um trabalho da faculdade. Mas eu quero deixar completo e utilizar APIs como consulta de CEP.
+
+Preciso também definir o modelo que será utilizado, pois nesse trabalho de faculdade. Estamos fazendo para Programação 2 e Engenharia de Software!

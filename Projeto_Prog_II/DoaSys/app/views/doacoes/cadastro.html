@@ -113,11 +113,11 @@
                 <!-- Dados do Beneficiário -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                            <i data-feather="target" class="w-6 h-6 text-primary"></i>
-                            Dados do Beneficiário
-                        </h2>
+                        <i data-feather="target" class="w-6 h-6 text-primary"></i>
+                        Dados do Beneficiário
+                    </h2>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="form-group">
                             <label class="form-label">Nome do Beneficiário *</label>
                             <input type="text" class="form-input" required placeholder="Nome da pessoa/família beneficiada">
@@ -127,21 +127,31 @@
                             <label class="form-label">CPF *</label>
                             <input type="text" class="form-input" required placeholder="000.000.000-00">
                         </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Endereço *</label>
-                            <input type="text" class="form-input" required placeholder="Rua, número, bairro">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Cidade *</label>
-                            <input type="text" class="form-input" required placeholder="Cidade">
-                        </div>
-                        
+
                         <div class="form-group">
                             <label class="form-label">CEP *</label>
-                            <input type="text" class="form-input" required placeholder="00000-000">
+                            <input type="text" class="form-input" id="cep" required placeholder="00000-000">
                         </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Endereço *</label>
+                            <input type="text" class="form-input" id="endereco" required placeholder="Rua, número, bairro">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Bairro *</label>
+                            <input type="text" class="form-input" id="bairro" placeholder="Bairro">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Cidade *</label>
+                            <input type="text" class="form-input" id="cidade" required placeholder="Cidade">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Estado *</label>
+                            <input type="text" class="form-input" id="estado" required placeholder="UF">
+                        </div>                      
                     </div>
                 </div>
 
@@ -168,10 +178,15 @@
     <script>
         feather.replace();
         
-        // Form submission handler
-        document.getElementById('doacaoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Form submission handler ajustado
+        const doacaoForm = document.getElementById('doacaoForm');
+        doacaoForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // evita o envio padrão do formulário
+
+            // Exibe notificação de sucesso usando o DoaSysApp
             window.DoaSysApp.showNotification('Doação cadastrada com sucesso!', 'success');
+
+            // Redireciona após 1.5s
             setTimeout(() => {
                 window.location.href = '/doacoes.html';
             }, 1500);
