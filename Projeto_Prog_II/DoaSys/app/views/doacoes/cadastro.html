@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Doação - DoaSys</title>
+
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -22,15 +26,22 @@
             }
         }
     </script>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
-    <custom-navbar></custom-navbar>
     
+    <!-- NAVBAR -->
+    <custom-navbar></custom-navbar>
+
     <main class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
+
+            <!-- Título -->
             <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-gray-800 mb-4">
-                    <i data-feather="plus" class="inline mr-3"></i>
+                <h1 class="text-4xl font-bold text-gray-800 mb-4 flex justify-center items-center gap-3">
+                    <i data-feather="plus"></i>
                     Cadastrar Nova Doação
                 </h1>
                 <p class="text-lg text-gray-600">
@@ -38,159 +49,174 @@
                 </p>
             </div>
 
+            <!-- FORM -->
             <form id="doacaoForm" class="bg-white rounded-2xl shadow-xl p-8 card-hover">
-                <!-- Dados do Doador -->
-                <div class="mb-8">
+
+                <!--    DADOS DO DOADOR       -->
+                <div class="mb-10">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <i data-feather="user" class="w-6 h-6 text-primary"></i>
+                        <i data-feather="user" class="text-primary"></i>
                         Dados do Doador
                     </h2>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="form-group">
-                        <label class="form-label">Nome Completo *</label>
-                        <input type="text" class="form-input" required placeholder="Nome do doador">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">CPF/CNPJ *</label>
-                        <input type="text" class="form-input" required placeholder="000.000.000-00">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">E-mail</label>
-                        <input type="email" class="form-input" placeholder="email@exemplo.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Telefone *</label>
-                        <input type="tel" class="form-input" required placeholder="(11) 99999-9999">
+
+                        <div>
+                            <label class="form-label">Nome *</label>
+                            <input type="text" name="nome_doador" class="form-input" required placeholder="Nome do doador">
+                        </div>
+
+                        <div>
+                            <label class="form-label">CPF ou CNPJ *</label>
+                            <input type="text" name="documento" class="form-input" required placeholder="000.000.000-00">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-input" placeholder="email@exemplo.com">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Telefone *</label>
+                            <input type="tel" name="telefone" class="form-input" required placeholder="(11) 99999-9999">
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Dados da Doação -->
-                <div class="mb-8">
+                <!--    DADOS DA DOAÇÃO       -->
+                <div class="mb-10">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <i data-feather="package" class="w-6 h-6 text-primary"></i>
+                        <i data-feather="package" class="text-primary"></i>
                         Dados da Doação
                     </h2>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="form-group">
-                        <label class="form-label">Tipo de Doação *</label>
-                        <select class="form-input" required>
-                            <option value="">Selecione o tipo</option>
-                            <option value="alimentos">Alimentos</option>
-                            <option value="roupas">Roupas</option>
-                            <option value="medicamentos">Medicamentos</option>
-                            <option value="dinheiro">Dinheiro</option>
-                            <option value="moveis">Móveis</option>
-                            <option value="eletronicos">Eletrônicos</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Quantidade *</label>
-                        <input type="number" class="form-input" required placeholder="Ex: 10">
-                    </div>
-                    
-                    <div class="form-group md:col-span-2">
-                        <label class="form-label">Descrição Detalhada</label>
-                        <textarea class="form-input" rows="3" placeholder="Descreva os itens da doação..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Valor Estimado (R$)</label>
-                        <input type="number" step="0.01" class="form-input" placeholder="0,00">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Data da Doação *</label>
-                        <input type="date" class="form-input" required>
+
+                        <div>
+                            <label class="form-label">Tipo de Doação *</label>
+                            <select name="categoria" class="form-input" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="alimentos">Alimentos</option>
+                                <option value="roupas">Roupas</option>
+                                <option value="medicamentos">Medicamentos</option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="moveis">Móveis</option>
+                                <option value="eletronicos">Eletrônicos</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Quantidade *</label>
+                            <input type="number" name="quantidade" class="form-input" required placeholder="Ex: 10">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="form-label">Descrição Detalhada</label>
+                            <textarea name="descricao" class="form-input" rows="3" placeholder="Descreva a doação..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Valor Estimado (R$)</label>
+                            <input type="number" step="0.01" name="valor" class="form-input" placeholder="0,00">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Data da Doação *</label>
+                            <input type="date" name="data_doacao" class="form-input" required>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Dados do Beneficiário -->
-                <div class="mb-8">
+                <!--   DADOS BENEFICIÁRIO     -->
+                <div class="mb-10">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <i data-feather="target" class="w-6 h-6 text-primary"></i>
+                        <i data-feather="target" class="text-primary"></i>
                         Dados do Beneficiário
                     </h2>
-                        
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="form-group">
-                            <label class="form-label">Nome do Beneficiário *</label>
-                            <input type="text" class="form-input" required placeholder="Nome da pessoa/família beneficiada">
+
+                        <div>
+                            <label class="form-label">Nome *</label>
+                            <input type="text" name="beneficiario_nome" class="form-input" required placeholder="Nome da família/pessoa">
                         </div>
-                        
-                        <div class="form-group">
+
+                        <div>
                             <label class="form-label">CPF *</label>
-                            <input type="text" class="form-input" required placeholder="000.000.000-00">
+                            <input type="text" name="beneficiario_cpf" class="form-input" required placeholder="000.000.000-00">
                         </div>
 
-                        <div class="form-group">
+                        <div>
                             <label class="form-label">CEP *</label>
-                            <input type="text" class="form-input" id="cep" required placeholder="00000-000">
+                            <input id="cep" name="cep" type="text" class="form-input" required placeholder="00000-000">
                         </div>
 
-                        <div class="form-group">
+                        <div>
                             <label class="form-label">Endereço *</label>
-                            <input type="text" class="form-input" id="endereco" required placeholder="Rua, número, bairro">
+                            <input id="endereco" name="endereco" type="text" class="form-input" required>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Bairro *</label>
-                            <input type="text" class="form-input" id="bairro" placeholder="Bairro">
+                        <div>
+                            <label class="form-label">Bairro</label>
+                            <input id="bairro" name="bairro" type="text" class="form-input">
                         </div>
 
-                        <div class="form-group">
+                        <div>
                             <label class="form-label">Cidade *</label>
-                            <input type="text" class="form-input" id="cidade" required placeholder="Cidade">
+                            <input id="cidade" name="cidade" type="text" class="form-input" required>
                         </div>
 
-                        <div class="form-group">
+                        <div>
                             <label class="form-label">Estado *</label>
-                            <input type="text" class="form-input" id="estado" required placeholder="UF">
-                        </div>                      
+                            <input id="estado" name="estado" type="text" class="form-input" required>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Botões -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-end">
-                    <button type="button" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                <!-- BOTÕES -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6">
+                    
+                    <button type="button" onclick="window.location.href='/'"
+                        class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
                         <i data-feather="x" class="inline mr-2"></i>
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105">
+
+                    <button type="submit"
+                        class="bg-primary hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105">
                         <i data-feather="save" class="inline mr-2"></i>
                         Salvar Doação
                     </button>
+
                 </div>
+
             </form>
         </div>
     </main>
 
+    <!-- FOOTER -->
     <custom-footer></custom-footer>
 
     <script src="components/navbar.js"></script>
     <script src="components/footer.js"></script>
-    <script src="script.js"></script>
+
     <script>
         feather.replace();
-        
-        // Form submission handler ajustado
-        const doacaoForm = document.getElementById('doacaoForm');
-        doacaoForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // evita o envio padrão do formulário
 
-            // Exibe notificação de sucesso usando o DoaSysApp
-            window.DoaSysApp.showNotification('Doação cadastrada com sucesso!', 'success');
+        // Sistema de notificação e redirecionamento
+        document.getElementById("doacaoForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
-            // Redireciona após 1.5s
+            window.DoaSysApp?.showNotification("Doação cadastrada com sucesso!", "success");
+
             setTimeout(() => {
-                window.location.href = '/doacoes.html';
+                window.location.href = "/doacoes.html";
             }, 1500);
         });
     </script>
+
 </body>
 </html>
