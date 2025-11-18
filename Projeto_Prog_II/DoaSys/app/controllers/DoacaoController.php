@@ -19,7 +19,7 @@ class DoacaoController {
     }
 
     public function cadastrar($basePath = '') {
-        include __DIR__ . '/../views/doacoes/cadastro.php';
+        include __DIR__ . '/../views/doacoes/cadastro.html';
     }
 
     public function salvar() {
