@@ -16,6 +16,8 @@ CREATE TABLE usuarios (
 CREATE TABLE doacoes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario_id INT NULL,
+  beneficiario_nome VARCHAR(150),
+  beneficiario_cpf VARCHAR(20),
   titulo VARCHAR(150) NOT NULL,
   descricao TEXT,
   categoria VARCHAR(100),

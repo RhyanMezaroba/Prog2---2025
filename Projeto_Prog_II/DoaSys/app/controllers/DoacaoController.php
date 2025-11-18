@@ -6,7 +6,6 @@ require_once __DIR__ . '/../models/Usuario.php';
 class DoacaoController {
 
     public function listar() {
-        // coleta filtros GET
         $filtros = [
             'categoria' => $_GET['categoria'] ?? null,
             'status' => $_GET['status'] ?? null,
@@ -16,12 +15,11 @@ class DoacaoController {
 
         $doacoes = Doacao::listarTodos($filtros);
 
-        // a sua view é .html — se preferir .php, renomeie o arquivo
         include __DIR__ . '/../views/doacoes/doacoes.html';
     }
 
-    public function cadastrar() {
-        include __DIR__ . '/../views/doacoes/cadastro.html';
+    public function cadastrar($basePath = '') {
+        include __DIR__ . '/../views/doacoes/cadastro.php';
     }
 
     public function salvar() {
@@ -32,15 +30,9 @@ class DoacaoController {
             exit;
         }
 
-        // Sanitização básica
         $sanitize = function($key) {
             return isset($_POST[$key]) ? trim($_POST[$key]) : null;
         };
-
-        $nome_doador       = $sanitize('nome_doador');
-        $documento         = $sanitize('documento');
-        $email             = $sanitize('email');
-        $telefone          = $sanitize('telefone');
 
         $categoria         = $sanitize('categoria');
         $quantidade        = $sanitize('quantidade');
@@ -54,46 +46,39 @@ class DoacaoController {
         $endereco          = $sanitize('endereco');
         $bairro            = $sanitize('bairro');
         $cidade            = $sanitize('cidade');
-        $estado            = $sanitize('estado');
 
-        // criar um título breve para a doação (pode mudar conforme preferir)
         $titulo = $categoria ? ($categoria . ' - ' . mb_substr($descricao ?? '', 0, 40)) : (mb_substr($descricao ?? '', 0, 40));
 
-        // usuario_id se estiver logado
         $usuario_id = $_SESSION['usuario_id'] ?? null;
 
-        // Monta o array esperado pelo model Doacao::criar()
-        // O model aceita um array associativo com chaves correspondentes aos nomes dos parâmetros (sem os dois pontos)
         $params = [
-            'usuario_id'   => $usuario_id,
-            'titulo'       => $titulo ?: 'Doação',
-            'descricao'    => $descricao,
-            'categoria'    => $categoria,
-            'quantidade'   => $quantidade ?: null,
-            'valor'        => $valor ?: null,
-            'cidade'       => $cidade,
-            'bairro'       => $bairro,
-            'endereco'     => $endereco,
-            'cep'          => $cep,
-            'status'       => 'pendente',
-            'data_doacao'  => $data_doacao ?: null
+            'usuario_id'        => $usuario_id,
+            'titulo'            => $titulo ?: 'Doação',
+            'descricao'         => $descricao,
+            'categoria'         => $categoria,
+            'quantidade'        => $quantidade ?: null,
+            'valor'             => $valor ?: null,
+            'cidade'            => $cidade,
+            'bairro'            => $bairro,
+            'endereco'          => $endereco,
+            'cep'               => $cep,
+            'status'            => 'pendente',
+            'data_doacao'       => $data_doacao ?: null,
+            'beneficiario_nome' => $beneficiario_nome,
+            'beneficiario_cpf'  => $beneficiario_cpf
         ];
 
-        // Tenta salvar
         try {
             $ok = Doacao::criar($params);
             if ($ok) {
-                // flash simples na sessão (se usar nas views)
                 $_SESSION['flash_success'] = 'Doação cadastrada com sucesso.';
             } else {
                 $_SESSION['flash_error'] = 'Erro ao cadastrar a doação.';
             }
         } catch (Exception $e) {
-            // logar o erro em produção/arquivo; aqui mostramos mensagem simples
             $_SESSION['flash_error'] = 'Erro no servidor: ' . $e->getMessage();
         }
 
-        // Redireciona para a lista de doações (rota limpa)
         header('Location: /doacoes');
         exit;
     }
@@ -115,19 +100,23 @@ class DoacaoController {
             header('Location: /doacoes');
             exit;
         }
+
         $dados = [
-            'titulo' => $_POST['titulo'] ?? null,
-            'descricao' => $_POST['descricao'] ?? null,
-            'categoria' => $_POST['categoria'] ?? null,
-            'quantidade' => $_POST['quantidade'] ?: null,
-            'valor' => $_POST['valor'] ?: null,
-            'cidade' => $_POST['cidade'] ?? null,
-            'bairro' => $_POST['bairro'] ?? null,
-            'endereco' => $_POST['endereco'] ?? null,
-            'cep' => $_POST['cep'] ?? null,
-            'status' => $_POST['status'] ?? null,
-            'data_doacao' => $_POST['data_doacao'] ?: null
+            'titulo'            => $_POST['titulo'] ?? null,
+            'descricao'         => $_POST['descricao'] ?? null,
+            'categoria'         => $_POST['categoria'] ?? null,
+            'quantidade'        => $_POST['quantidade'] ?: null,
+            'valor'             => $_POST['valor'] ?: null,
+            'cidade'            => $_POST['cidade'] ?? null,
+            'bairro'            => $_POST['bairro'] ?? null,
+            'endereco'          => $_POST['endereco'] ?? null,
+            'cep'               => $_POST['cep'] ?? null,
+            'status'            => $_POST['status'] ?? null,
+            'data_doacao'       => $_POST['data_doacao'] ?: null,
+            'beneficiario_nome' => $_POST['beneficiario_nome'] ?? null,
+            'beneficiario_cpf'  => $_POST['beneficiario_cpf'] ?? null
         ];
+
         Doacao::atualizar($id, $dados);
         header('Location: /doacoes');
     }
