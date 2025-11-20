@@ -1,68 +1,192 @@
 <?php
 
-require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../Models/User.php';
 
-class AuthController {
-    public function mostrarFormularioRegistro() {
-        include __DIR__ . '/../views/auth/registro.php'; // caso tenha view
+class authController
+{
+    protected $userModel;
+    protected $viewsPath;
+
+    public function __construct()
+    {
+        $this->userModel = new User();
+        $this->viewsPath = __DIR__ . '/../../resources/views/auth/';
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
-    public function registrar() {
-        session_start();
-        $nome = trim($_POST['nome'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $senha = $_POST['senha'] ?? '';
-        $tipo = $_POST['tipo'] ?? 'cliente'; // 'cliente' ou 'instituicao'
-        $documento = $_POST['documento'] ?? null;
+    protected function render(string $viewFile, array $data = [])
+    {
+        extract($data, EXTR_SKIP);
+        $file = $this->viewsPath . $viewFile . '.php';
+        if (!file_exists($file)) {
+            throw new \RuntimeException("View not found: {$file}");
+        }
+        require $file;
+    }
 
-        if (!$nome || !$senha) {
-            $_SESSION['flash_error'] = "Nome e senha são obrigatórios.";
-            header('Location: /usuario/cadastrar');
-            exit;
+    protected function redirect(string $url = null)
+    {
+        $url = $url ?? ($_SERVER['HTTP_REFERER'] ?? '/');
+        header('Location: ' . $url);
+        exit;
+    }
+
+    protected function setFlash(string $key, $value)
+    {
+        $_SESSION['flash'][$key] = $value;
+    }
+
+    protected function getFlash(string $key)
+    {
+        $v = $_SESSION['flash'][$key] ?? null;
+        unset($_SESSION['flash'][$key]);
+        return $v;
+    }
+
+    // Mostra formulário de login
+    public function showLogin()
+    {
+        $old = $_SESSION['old'] ?? [];
+        $errors = $_SESSION['errors'] ?? [];
+        unset($_SESSION['old'], $_SESSION['errors']);
+        $this->render('login', compact('old', 'errors'));
+    }
+
+    // Processa login (POST)
+    public function login()
+    {
+        $data = $this->sanitizeInput($_POST);
+        $errors = $this->validateLogin($data);
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $data;
+            $this->redirect();
         }
 
-        // evitar duplicate email
-        if ($email && Usuario::buscarPorEmail($email)) {
-            $_SESSION['flash_error'] = "E-mail já cadastrado.";
-            header('Location: /usuario/cadastrar');
-            exit;
+        $user = $this->userModel->findByEmail($data['email'] ?? '');
+        if (!$user || !password_verify($data['password'] ?? '', $user['senha'] ?? '')) {
+            $this->setFlash('error', 'Credenciais inválidas.');
+            $this->redirect();
         }
 
-        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-        Usuario::criar($nome, $email ?: null, $senhaHash, $tipo, $documento);
-
-        $_SESSION['flash_success'] = "Cadastro realizado com sucesso. Faça login.";
-        header('Location: /login');
+        // Autentica
+        $_SESSION['user_id'] = $user['id'];
+        $this->setFlash('success', 'Login realizado.');
+        $this->redirect('/'); // ajustar rota após login
     }
 
-    public function mostrarFormularioLogin() {
-        include __DIR__ . '/../views/auth/login.php';
+    // Mostra formulário de registro
+    public function showRegister()
+    {
+        $old = $_SESSION['old'] ?? [];
+        $errors = $_SESSION['errors'] ?? [];
+        unset($_SESSION['old'], $_SESSION['errors']);
+        $this->render('register', compact('old', 'errors'));
     }
 
-    public function login() {
-        session_start();
-        $email = $_POST['email'] ?? '';
-        $senha = $_POST['senha'] ?? '';
-
-        $usuario = Usuario::buscarPorEmail($email);
-        if (!$usuario || !password_verify($senha, $usuario['senha'])) {
-            $_SESSION['flash_error'] = 'Credenciais inválidas.';
-            header('Location: /login');
-            exit;
+    // Processa registro (POST)
+    public function register()
+    {
+        $data = $this->sanitizeInput($_POST);
+        $errors = $this->validateRegister($data);
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $data;
+            $this->redirect();
         }
 
-        // set session
-        $_SESSION['usuario_id'] = $usuario['id'];
-        $_SESSION['usuario_nome'] = $usuario['nome'];
-        $_SESSION['usuario_tipo'] = $usuario['tipo'];
+        // evita duplicar email
+        if ($this->userModel->findByEmail($data['email'])) {
+            $this->setFlash('error', 'E-mail já cadastrado.');
+            $this->redirect();
+        }
 
-        header('Location: /'); // home
+        $passwordHash = password_hash($data['password'], PASSWORD_DEFAULT);
+        $payload = [
+            'nome' => $data['nome'] ?? null,
+            'email' => $data['email'],
+            'senha' => $passwordHash,
+            'tipo' => $data['tipo'] ?? 'usuario'
+        ];
+
+        try {
+            $newId = $this->userModel->create($payload);
+            $_SESSION['user_id'] = $newId;
+            $this->setFlash('success', 'Conta criada.');
+            $this->redirect('/');
+        } catch (\Exception $e) {
+            $this->setFlash('error', 'Erro ao criar conta: ' . $e->getMessage());
+            $this->redirect();
+        }
     }
 
-    public function logout() {
-        session_start();
-        session_unset();
-        session_destroy();
-        header('Location: /');
+    // Logout
+    public function logout()
+    {
+        unset($_SESSION['user_id']);
+        session_regenerate_id(true);
+        $this->setFlash('success', 'Desconectado.');
+        $this->redirect('/');
+    }
+
+    // Retorna usuário atual ou null
+    public function currentUser()
+    {
+        if (!empty($_SESSION['user_id'])) {
+            return $this->userModel->findById($_SESSION['user_id']);
+        }
+        return null;
+    }
+
+    // Protege rotas: redireciona para login se não autenticado
+    public function requireAuth()
+    {
+        if (!$this->currentUser()) {
+            $this->setFlash('error', 'Acesso restrito. Faça login.');
+            $this->redirect('/auth/login');
+        }
+    }
+
+    // Helpers
+    protected function sanitizeInput(array $input)
+    {
+        $clean = [];
+        foreach ($input as $k => $v) {
+            $clean[$k] = is_string($v) ? trim($v) : $v;
+        }
+        return $clean;
+    }
+
+    protected function validateLogin(array $data)
+    {
+        $errors = [];
+        if (empty($data['email'])) {
+            $errors['email'] = 'E-mail é obrigatório.';
+        }
+        if (empty($data['password'])) {
+            $errors['password'] = 'Senha é obrigatória.';
+        }
+        return $errors;
+    }
+
+    protected function validateRegister(array $data)
+    {
+        $errors = [];
+        if (empty($data['nome'])) {
+            $errors['nome'] = 'Nome é obrigatório.';
+        }
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'E-mail inválido.';
+        }
+        if (empty($data['password']) || strlen($data['password']) < 6) {
+            $errors['password'] = 'Senha com mínimo de 6 caracteres.';
+        }
+        if (($data['password'] ?? '') !== ($data['password_confirm'] ?? '')) {
+            $errors['password_confirm'] = 'Confirmação de senha não confere.';
+        }
+        return $errors;
     }
 }
+?>

@@ -25,8 +25,12 @@ class DoacaoController {
     public function salvar() {
         session_start();
 
+        // DEBUG: registrar método e dados recebidos para investigar por que não persiste
+        error_log('[DoacaoController::salvar] METHOD: ' . ($_SERVER['REQUEST_METHOD'] ?? ''));
+        error_log('[DoacaoController::salvar] POST: ' . print_r($_POST, true));
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /doacoes');
+            header('Location: /DoaSys/doacoes');
             exit;
         }
 
@@ -70,16 +74,18 @@ class DoacaoController {
 
         try {
             $ok = Doacao::criar($params);
+            error_log('[DoacaoController::salvar] Doacao::criar returned: ' . var_export($ok, true));
             if ($ok) {
                 $_SESSION['flash_success'] = 'Doação cadastrada com sucesso.';
             } else {
                 $_SESSION['flash_error'] = 'Erro ao cadastrar a doação.';
             }
         } catch (Exception $e) {
+            error_log('[DoacaoController::salvar] Exception: ' . $e->getMessage());
             $_SESSION['flash_error'] = 'Erro no servidor: ' . $e->getMessage();
         }
 
-        header('Location: /doacoes');
+        header('Location: /DoaSys/doacoes');
         exit;
     }
 
