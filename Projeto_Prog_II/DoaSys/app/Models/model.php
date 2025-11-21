@@ -23,13 +23,15 @@ class model
         }
 
         try {
-            // Configurações do banco — ajuste se necessário
-            $host   = 'localhost';
-            $dbname = 'DoaSys_BD';
-            $user   = 'root';
-            $pass   = '';
+            // Configurações do banco — atualizadas conforme solicitado
+            $host    = '127.0.0.1';
+            $port    = 3306;
+            $dbname  = 'DoaSys_BD';
+            $user    = 'root';
+            $pass    = '1234';
+            $charset = 'utf8mb4';
 
-            $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
+            $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset={$charset}";
             self::$db = new PDO($dsn, $user, $pass);
 
             // Configura modos do PDO

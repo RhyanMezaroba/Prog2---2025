@@ -34,14 +34,19 @@
   <main class="max-w-3xl mx-auto p-6">
     <!-- Título -->
     <header class="text-center mb-10">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 flex justify-center items-center gap-2 mb-2">
-        <i data-feather="plus"></i> Cadastrar Nova Doação
-      </h1>
-      <p class="text-gray-600">Preencha os dados da doação para registrar no sistema</p>
+      <div class="flex justify-between items-center max-w-3xl mx-auto">
+        <div class="flex items-center gap-4">
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-800 flex items-center gap-2 mb-0">
+            <i data-feather="plus"></i> Cadastrar Nova Doação
+          </h1>
+          <a href="/DoaSys/app/migration/router.php?c=home&a=index" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Home</a>
+        </div>
+        <p class="text-gray-600">Preencha os dados da doação para registrar no sistema</p>
+      </div>
     </header>
 
     <!-- Formulário -->
-    <form id="doacaoForm" method="POST" action="/DoaSys/router.php?c=donation&a=store" class="bg-white p-6 rounded-xl shadow-md space-y-8">
+    <form id="doacaoForm" method="POST" action="/DoaSys/app/migration/router.php?c=donation&a=store" class="bg-white p-6 rounded-xl shadow-md space-y-8">
 
       <!-- DADOS DO DOADOR -->
       <section class="space-y-4">
@@ -108,7 +113,7 @@
 
       <!-- Botões -->
       <div class="flex flex-col sm:flex-row gap-4 justify-end">
-        <button type="button" onclick="window.location.href='/DoaSys/App/Views/Donations/list.php'" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition flex items-center gap-2">
+        <button type="button" onclick="window.location.href='/DoaSys/app/migration/router.php?c=donation&a=index'" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition flex items-center gap-2">
           <i data-feather="x"></i> Cancelar
         </button>
         <button type="submit" id="saveBtn" class="bg-primary hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition transform hover:scale-105">

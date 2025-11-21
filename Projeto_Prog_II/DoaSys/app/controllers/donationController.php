@@ -1,9 +1,9 @@
 <?php
 // filepath: c:\laragon\www\DoaSys\App\Controllers\DonationController.php
-require_once __DIR__ . '/BaseController.php';
-require_once __DIR__ . '/../Models/Donation.php';
+require_once __DIR__ . '/baseController.php';
+require_once __DIR__ . '/../Models/donationModel.php';
 
-class DonationController extends BaseController
+class donationController extends baseController
 {
     protected $model;
     protected $viewsPath;
@@ -11,7 +11,7 @@ class DonationController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->model = new Donation();
+        $this->model = new donationModel();
         $this->setViewsPath(__DIR__ . '/../../resources/views/donations/');
     }
 

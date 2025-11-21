@@ -6,7 +6,7 @@ $controller = isset($_REQUEST['c']) ? preg_replace('/[^a-z0-9_]/i','', $_REQUEST
 $action     = isset($_REQUEST['a']) ? preg_replace('/[^a-z0-9_]/i','', $_REQUEST['a']) : 'index';
 
 $controllerClass = ucfirst($controller) . 'Controller';
-$controllerFile  = __DIR__ . '/App/Controllers/' . $controllerClass . '.php';
+$controllerFile  = __DIR__ . '/../controllers/' . $controllerClass . '.php';
 
 if (!file_exists($controllerFile)) {
     http_response_code(404);

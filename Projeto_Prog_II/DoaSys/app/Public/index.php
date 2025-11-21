@@ -1,6 +1,6 @@
 <?php
     if ($path === '/donations') {
-        $donModel = new Donation();
+        $donModel = new donationModel();
         $donations = $donModel->getAll();
         require __DIR__ . '/../app/Views/donations/index.php';
         exit;
@@ -15,7 +15,7 @@
                             ? null
                             : $_SESSION['user_id'];
 
-            $donModel = new Donation();
+            $donModel = new donationModel();
 
             $donModel->create([
                 'usuario_id'        => $usuario_id,

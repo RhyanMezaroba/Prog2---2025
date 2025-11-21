@@ -1,7 +1,7 @@
 <?php
-require_once 'Model.php';
+require_once __DIR__ . '/model.php';
 
-class userModel extends Model {
+class userModel extends \App\Core\model {
 
     public function create($data) {
         $sql = "INSERT INTO usuarios (nome, email, senha, tipo, documento)

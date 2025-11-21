@@ -2,7 +2,7 @@
 // API simples que retorna JSON de doações (aceita filtros via GET)
 require_once __DIR__ . '/../App/Models/Donation.php';
 
-$donationModel = new Donation();
+$donationModel = new donationModel();
 
 $tipo = isset($_GET['tipo']) && $_GET['tipo'] !== '' ? trim($_GET['tipo']) : null;
 $dataInicio = isset($_GET['data_inicio']) && $_GET['data_inicio'] !== '' ? trim($_GET['data_inicio']) : null;

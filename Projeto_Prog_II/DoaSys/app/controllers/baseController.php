@@ -9,8 +9,8 @@ class baseController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        // caminho padrão para views: resources/views/
-        $this->viewsPath = $viewsPath ?? (__DIR__ . '/../../resources/views/');
+        // caminho padrão para views: app/Views/ (ajustado ao layout deste projeto)
+        $this->viewsPath = $viewsPath ?? (__DIR__ . '/../Views/');
     }
 
     protected function setViewsPath(string $path)

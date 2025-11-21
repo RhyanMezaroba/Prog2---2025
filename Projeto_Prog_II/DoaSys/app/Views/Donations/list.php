@@ -1,3 +1,19 @@
+<?php
+require_once __DIR__ . '/../../Models/donationModel.php';
+$donationModel = new donationModel();
+$tipo = isset($_GET['tipo']) && $_GET['tipo'] !== '' ? trim($_GET['tipo']) : null;
+$dataInicio = isset($_GET['data_inicio']) && $_GET['data_inicio'] !== '' ? trim($_GET['data_inicio']) : null;
+$dataFim = isset($_GET['data_fim']) && $_GET['data_fim'] !== '' ? trim($_GET['data_fim']) : null;
+
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$perPage = 10; // itens por página
+
+$paged = $donationModel->getPaged($page, $perPage, $tipo, $dataInicio, $dataFim);
+$donations = $paged['data'];
+$total = $paged['total'];
+$totalPages = (int)ceil($total / $perPage);
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -48,11 +64,14 @@
                     </p>
                 </div>
 
-                <a href="/../DoaSys/app/views/doacoes/cadastro.html"
-                class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 mt-4 sm:mt-0">
-                    <i data-feather="plus" class="inline mr-2"></i>
-                    Nova Doação
-                </a>
+                <div class="flex items-center gap-3 mt-4 sm:mt-0">
+                    <a href="/DoaSys/app/migration/router.php?c=home&a=index" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Home</a>
+                    <a href="/DoaSys/app/Views/Donations/create.php"
+                    class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105">
+                        <i data-feather="plus" class="inline mr-2"></i>
+                        Nova Doação
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -62,56 +81,126 @@
 
                 <div class="form-group">
                     <label class="form-label">Tipo</label>
-                    <select id="filtroTipo" class="form-input w-full">
+                    <select id="filtroTipo" name="tipo" class="form-input w-full">
                         <option value="">Todos os tipos</option>
-                        <option value="alimentos">Alimentos</option>
-                        <option value="roupas">Roupas</option>
-                        <option value="medicamentos">Medicamentos</option>
-                        <option value="dinheiro">Dinheiro</option>
+                        <option value="alimentos" <?php echo ($tipo==='alimentos')? 'selected' : ''; ?>>Alimentos</option>
+                        <option value="roupas" <?php echo ($tipo==='roupas')? 'selected' : ''; ?>>Roupas</option>
+                        <option value="medicamentos" <?php echo ($tipo==='medicamentos')? 'selected' : ''; ?>>Medicamentos</option>
+                        <option value="dinheiro" <?php echo ($tipo==='dinheiro')? 'selected' : ''; ?>>Dinheiro</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Data Inicial</label>
-                    <input id="filtroDataInicio" type="date" class="form-input w-full">
+                    <input id="filtroDataInicio" name="data_inicio" type="date" value="<?php echo htmlspecialchars($dataInicio ?? ''); ?>" class="form-input w-full">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Data Final</label>
-                    <input id="filtroDataFim" type="date" class="form-input w-full">
+                    <input id="filtroDataFim" name="data_fim" type="date" value="<?php echo htmlspecialchars($dataFim ?? ''); ?>" class="form-input w-full">
                 </div>
 
             </div>
 
             <div class="flex justify-end gap-4 mt-4">
-                <button onclick="carregarDoacoes()" 
-                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
-                    <i data-feather="filter" class="inline mr-2"></i>
-                    Aplicar Filtros
-                </button>
+                <form method="get" class="inline">
+                    <input type="hidden" name="tipo" id="formTipoHidden" value="<?php echo htmlspecialchars($tipo ?? ''); ?>">
+                    <input type="hidden" name="data_inicio" id="formDataInicioHidden" value="<?php echo htmlspecialchars($dataInicio ?? ''); ?>">
+                    <input type="hidden" name="data_fim" id="formDataFimHidden" value="<?php echo htmlspecialchars($dataFim ?? ''); ?>">
+                    <button type="submit" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
+                        <i data-feather="filter" class="inline mr-2"></i>
+                        Aplicar Filtros
+                    </button>
+                </form>
             </div>
         </div>
 
-        <!-- LISTA DE DOAÇÕES — GERADA VIA JS -->
-        <div id="lista-doacoes" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <!-- LISTA DE DOAÇÕES — RENDERIZADA NO SERVIDOR -->
+        <div id="lista-doacoes" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <?php if (empty($donations)): ?>
+                <div class="col-span-1 bg-white p-6 rounded-lg">Nenhuma doação encontrada.</div>
+            <?php else: ?>
+                <?php foreach ($donations as $d): ?>
+                    <?php
+                        $status = htmlspecialchars($d['status'] ?? '');
+                        $categoria = htmlspecialchars($d['categoria'] ?? $d['tipo'] ?? '');
+                        $titulo = htmlspecialchars($d['titulo'] ?? $d['descricao'] ?? '');
+                        $benef = htmlspecialchars($d['beneficiario_nome'] ?? $d['beneficiario'] ?? '');
+                        $doador = htmlspecialchars($d['nome_usuario'] ?? $d['doador'] ?? '-');
+                        $valorDisplay = '-';
+                        if (isset($d['valor']) && $d['valor'] !== '' && is_numeric($d['valor'])) {
+                            $valorDisplay = 'R$ ' . number_format((float)$d['valor'], 2, ',', '.');
+                        } elseif (!empty($d['quantidade'])) {
+                            $valorDisplay = htmlspecialchars($d['quantidade']) . ' itens';
+                        }
+                        $dataStr = $d['data_doacao'] ?? $d['data'] ?? null;
+                        $dataFormatada = $dataStr ? implode('/', array_reverse(explode('-', $dataStr))) : '-';
+                    ?>
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="inline-block px-3 py-1 rounded-full text-sm font-medium <?php echo ($status==='entregue')? 'bg-green-100 text-green-800' : (($status==='pendente')? 'bg-yellow-100 text-yellow-800' : (($status==='cancelada')? 'bg-red-100 text-red-800':'bg-gray-100 text-gray-700')); ?>">
+                                    <?php echo ucfirst($status); ?>
+                                </span>
 
-        <!-- Paginação (Futuro) -->
+                                <span class="ml-2 inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                    <?php echo $categoria; ?>
+                                </span>
+                            </div>
+
+                            <button class="text-gray-400 hover:text-primary transition duration-300">
+                                <i data-feather="more-vertical"></i>
+                            </button>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2"><?php echo $titulo; ?></h3>
+                        <p class="text-gray-600 mb-4"><?php echo $benef; ?></p>
+
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-gray-500">Doador</p>
+                                <p class="font-medium"><?php echo $doador; ?></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-500">Valor / Qtde</p>
+                                <p class="font-medium"><?php echo $valorDisplay; ?></p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-500">Data</p>
+                                <p class="font-medium"><?php echo $dataFormatada; ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- Paginação -->
+        <?php if ($totalPages > 1): ?>
         <div class="flex justify-center mt-12">
-            <nav class="flex items-center gap-2">
-                <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+            <nav class="flex items-center gap-2" aria-label="Paginação">
+                <?php $prev = max(1, $page - 1); ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page'=>$prev])); ?>" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     <i data-feather="chevron-left"></i>
-                </button>
+                </a>
 
-                <button class="px-3 py-2 bg-primary text-white rounded-lg font-medium">1</button>
+                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
+                    <?php if ($p == $page): ?>
+                        <span class="px-3 py-2 bg-primary text-white rounded-lg font-medium"><?php echo $p; ?></span>
+                    <?php else: ?>
+                        <a href="?<?php echo http_build_query(array_merge($_GET, ['page'=>$p])); ?>" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"><?php echo $p; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
 
-                <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">2</button>
-                <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">3</button>
-
-                <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                <?php $next = min($totalPages, $page + 1); ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page'=>$next])); ?>" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     <i data-feather="chevron-right"></i>
-                </button>
+                </a>
             </nav>
         </div>
+        <?php endif; ?>
 
     </main>
 
@@ -124,115 +213,10 @@
     <script>
         feather.replace();
 
-        // substitui array hardcoded por carregamento via API
-        let doacoes = [];
-
-        function gerarCard(doacao) {
-            const statusClasses = {
-                entregue: "bg-green-100 text-green-800",
-                pendente: "bg-yellow-100 text-yellow-800",
-                cancelada: "bg-red-100 text-red-800"
-            };
-
-            const valorDisplay = (doacao.valor && !isNaN(doacao.valor)) 
-                ? "R$ " + parseFloat(doacao.valor).toFixed(2) 
-                : ((doacao.quantidade) ? (doacao.quantidade + " itens") : '-');
-
-            const dataStr = doacao.data_doacao ?? doacao.data ?? null;
-            const dataFormatada = dataStr ? dataStr.split("-").reverse().join("/") : '-';
-
-            return `
-            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <span class="inline-block px-3 py-1 rounded-full text-sm font-medium ${statusClasses[doacao.status] ?? 'bg-gray-100 text-gray-700'}">
-                            ${(doacao.status ?? '').charAt(0).toUpperCase() + (doacao.status ?? '').slice(1)}
-                        </span>
-
-                        <span class="ml-2 inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                            ${doacao.categoria ?? doacao.tipo ?? ''}
-                        </span>
-                    </div>
-
-                    <button class="text-gray-400 hover:text-primary transition duration-300">
-                        <i data-feather="more-vertical"></i>
-                    </button>
-                </div>
-
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">${doacao.titulo ?? doacao.descricao ?? ''}</h3>
-                <p class="text-gray-600 mb-4">${doacao.beneficiario_nome ?? doacao.beneficiario ?? ''}</p>
-
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                        <p class="text-gray-500">Doador</p>
-                        <p class="font-medium">${doacao.nome_usuario ?? doacao.doador ?? '-'}</p>
-                    </div>
-
-                    <div>
-                        <p class="text-gray-500">Valor / Qtde</p>
-                        <p class="font-medium">${valorDisplay}</p>
-                    </div>
-
-                    <div>
-                        <p class="text-gray-500">Data</p>
-                        <p class="font-medium">${dataFormatada}</p>
-                    </div>
-                </div>
-            </div>`;
-        }
-
-        async function fetchDoacoes(tipo = '', dataInicio = '', dataFim = '') {
-            const params = new URLSearchParams();
-            if (tipo) params.append('tipo', tipo);
-            if (dataInicio) params.append('data_inicio', dataInicio);
-            if (dataFim) params.append('data_fim', dataFim);
-
-            // ajuste o caminho conforme sua URL base (em Laragon pode ser /DoaSys/api/donations.php)
-            const url = '/DoaSys/api/donations.php' + (params.toString() ? ('?' + params.toString()) : '');
-            const res = await fetch(url, { cache: 'no-store' });
-            if (!res.ok) {
-                console.error('Erro ao carregar doações', res.status);
-                return [];
-            }
-            return await res.json();
-        }
-
-        // CARREGA DOAÇÕES NA TELA usando a API
-        async function carregarDoacoes() {
-            const lista = document.getElementById("lista-doacoes");
-            lista.innerHTML = "";
-
-            const tipoFiltro = (document.getElementById("filtroTipo").value || "").trim();
-            const dataInicio = (document.getElementById("filtroDataInicio").value || "").trim();
-            const dataFim = (document.getElementById("filtroDataFim").value || "").trim();
-
-            // busca já filtrada pelo servidor
-            try {
-                doacoes = await fetchDoacoes(tipoFiltro, dataInicio, dataFim);
-            } catch (err) {
-                console.error(err);
-                lista.innerHTML = `<div class="col-span-1 bg-white p-6 rounded-lg">Erro ao carregar doações.</div>`;
-                return;
-            }
-
-            if (!doacoes || doacoes.length === 0) {
-                lista.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-lg p-6 text-center col-span-1">
-                        <p class="text-gray-600">Nenhuma doação encontrada para os filtros aplicados.</p>
-                    </div>`;
-                feather.replace();
-                return;
-            }
-
-            doacoes.forEach(d => {
-                lista.innerHTML += gerarCard(d);
-            });
-
-            feather.replace();
-        }
-
-        // chama no carregamento inicial
-        carregarDoacoes();
+        // mantém os valores dos filtros no formulário visível
+        document.getElementById('filtroTipo')?.addEventListener('change', function(e){ document.getElementById('formTipoHidden').value = this.value; });
+        document.getElementById('filtroDataInicio')?.addEventListener('change', function(e){ document.getElementById('formDataInicioHidden').value = this.value; });
+        document.getElementById('filtroDataFim')?.addEventListener('change', function(e){ document.getElementById('formDataFimHidden').value = this.value; });
     </script>
 
 </body>
