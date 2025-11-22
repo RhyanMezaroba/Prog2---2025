@@ -1,7 +1,7 @@
 <?php
 // DB connection using mysqli — returns the connection object
 $host    = "127.0.0.1";
-$port    = 3306;               // inteiro
+$port    = 3306;
 $dbname  = "DoaSys_BD";
 $user    = "root";
 $pass    = "1234";
