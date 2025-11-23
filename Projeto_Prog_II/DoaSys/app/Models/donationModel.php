@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/model.php';
+require_once __DIR__ . '/../Core/Model.php';
 
-class donationModel extends \App\Core\model {
+class DonationModel extends \App\Core\model {
 
     public function create($data) {
         $sql = "INSERT INTO doacoes 

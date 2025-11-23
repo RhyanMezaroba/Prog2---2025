@@ -1,6 +1,6 @@
 <?php
 
-class baseController
+class BaseController
 {
     protected $viewsPath;
 

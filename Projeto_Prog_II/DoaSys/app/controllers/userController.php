@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/baseController.php';
-require_once __DIR__ . '/../Models/userModel.php';
+require_once __DIR__ . '/../Models/UserModel.php';
 
 class UserController extends baseController
 {
@@ -25,8 +25,8 @@ class UserController extends baseController
         }
 
         // tenta instanciar model auxiliar (se existir)
-        if (class_exists('userModel')) {
-            $this->model = new userModel();
+        if (class_exists('UserModel')) {
+            $this->model = new UserModel();
         }
 
         $this->setViewsPath(__DIR__ . '/../../resources/views/users/');

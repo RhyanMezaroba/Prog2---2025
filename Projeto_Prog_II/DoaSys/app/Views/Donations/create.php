@@ -1,3 +1,13 @@
+<?php
+// NÃO usar session_start() na view — já iniciado pelo controller.
+
+// Recebe flash, old, errors
+$flash = $_SESSION['flash'] ?? [];
+$errors = $_SESSION['errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['flash'], $_SESSION['errors'], $_SESSION['old']);
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -45,6 +55,13 @@
       </div>
     </header>
 
+    <?php if (!empty($flash['success'])): ?>
+      <div class="mb-6 p-4 rounded bg-green-100 text-green-800"><?php echo htmlspecialchars($flash['success']); ?></div>
+    <?php endif; ?>
+    <?php if (!empty($flash['error'])): ?>
+      <div class="mb-6 p-4 rounded bg-red-100 text-red-800"><?php echo htmlspecialchars($flash['error']); ?></div>
+    <?php endif; ?>
+
     <!-- Formulário -->
     <form id="doacaoForm" method="POST" action="/DoaSys/app/migration/router.php?c=donation&a=store" class="bg-white p-6 rounded-xl shadow-md space-y-8">
 
@@ -56,16 +73,23 @@
 
         <div class="flex items-center gap-4">
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" id="anonymousFlag" name="anonymous" value="1" class="form-checkbox h-5 w-5 text-primary">
+            <input type="checkbox" id="anonymousFlag" name="anonymous" value="1" class="form-checkbox h-5 w-5 text-primary" <?php echo (!empty($old['anonymous']) ? 'checked' : ''); ?>>
             <span class="text-gray-700">Cadastrar como anônimo</span>
           </label>
         </div>
 
         <div id="donorFields" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="text" name="nome_doador" placeholder="Nome do doador *" required class="form-input">
-          <input type="text" name="documento" placeholder="CPF ou CNPJ *" required class="form-input">
-          <input type="email" name="email" placeholder="Email" class="form-input">
-          <input type="tel" name="telefone" placeholder="Telefone *" required class="form-input">
+          <input type="text" name="nome_doador" placeholder="Nome do doador *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['nome_doador'] ?? ''); ?>">
+          <?php if (!empty($errors['nome_doador'])): ?><div class="text-red-600 text-sm"><?php echo htmlspecialchars($errors['nome_doador']); ?></div><?php endif; ?>
+
+          <input type="text" name="documento" placeholder="CPF ou CNPJ *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['documento'] ?? ''); ?>">
+          <?php if (!empty($errors['documento'])): ?><div class="text-red-600 text-sm"><?php echo htmlspecialchars($errors['documento']); ?></div><?php endif; ?>
+
+          <input type="email" name="email" placeholder="Email" class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>">
+          <?php if (!empty($errors['email'])): ?><div class="text-red-600 text-sm"><?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
+
+          <input type="tel" name="telefone" placeholder="Telefone *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['telefone'] ?? ''); ?>">
+          <?php if (!empty($errors['telefone'])): ?><div class="text-red-600 text-sm"><?php echo htmlspecialchars($errors['telefone']); ?></div><?php endif; ?>
         </div>
       </section>
 
@@ -75,23 +99,23 @@
           <i data-feather="package" class="text-primary"></i> Dados da Doação
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <select name="categoria" required class="form-input">
+          <select name="categoria" required class="px-3 py-2 border rounded w-full">
             <option value="">Tipo de Doação *</option>
-            <option value="alimentos">Alimentos</option>
-            <option value="roupas">Roupas</option>
-            <option value="medicamentos">Medicamentos</option>
-            <option value="dinheiro">Dinheiro</option>
-            <option value="moveis">Móveis</option>
-            <option value="eletronicos">Eletrônicos</option>
+            <option value="alimentos" <?php echo (isset($old['categoria']) && $old['categoria'] === 'alimentos') ? 'selected' : ''; ?>>Alimentos</option>
+            <option value="roupas" <?php echo (isset($old['categoria']) && $old['categoria'] === 'roupas') ? 'selected' : ''; ?>>Roupas</option>
+            <option value="medicamentos" <?php echo (isset($old['categoria']) && $old['categoria'] === 'medicamentos') ? 'selected' : ''; ?>>Medicamentos</option>
+            <option value="dinheiro" <?php echo (isset($old['categoria']) && $old['categoria'] === 'dinheiro') ? 'selected' : ''; ?>>Dinheiro</option>
+            <option value="moveis" <?php echo (isset($old['categoria']) && $old['categoria'] === 'moveis') ? 'selected' : ''; ?>>Móveis</option>
+            <option value="eletronicos" <?php echo (isset($old['categoria']) && $old['categoria'] === 'eletronicos') ? 'selected' : ''; ?>>Eletrônicos</option>
           </select>
 
           <!-- novo campo Título -->
-          <input type="text" name="titulo" placeholder="Título da doação *" required class="form-input">
+          <input type="text" name="titulo" placeholder="Título da doação *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['titulo'] ?? ''); ?>">
 
-          <input type="number" name="quantidade" placeholder="Quantidade *" required class="form-input">
-          <textarea name="descricao" rows="3" placeholder="Descrição da doação" class="form-input md:col-span-2"></textarea>
-          <input type="number" step="0.01" name="valor" placeholder="Valor estimado (R$)" class="form-input">
-          <input type="date" name="data_doacao" required class="form-input">
+          <input type="number" name="quantidade" placeholder="Quantidade *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['quantidade'] ?? ''); ?>">
+          <textarea name="descricao" rows="3" placeholder="Descrição da doação" class="px-3 py-2 border rounded w-full md:col-span-2"><?php echo htmlspecialchars($old['descricao'] ?? ''); ?></textarea>
+          <input type="number" step="0.01" name="valor" placeholder="Valor estimado (R$)" class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['valor'] ?? ''); ?>">
+          <input type="date" name="data_doacao" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['data_doacao'] ?? ''); ?>">
         </div>
       </section>
 
@@ -101,13 +125,13 @@
           <i data-feather="target" class="text-primary"></i> Dados do Beneficiário
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="text" name="beneficiario_nome" placeholder="Nome *" required class="form-input">
-          <input type="text" name="beneficiario_cpf" placeholder="CPF *" required class="form-input">
-          <input type="text" name="cep" placeholder="CEP *" required class="form-input">
-          <input type="text" name="endereco" placeholder="Endereço *" required class="form-input">
-          <input type="text" name="bairro" placeholder="Bairro" class="form-input">
-          <input type="text" name="cidade" placeholder="Cidade *" required class="form-input">
-          <input type="text" name="estado" placeholder="Estado *" required class="form-input">
+          <input type="text" name="beneficiario_nome" placeholder="Nome *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['beneficiario_nome'] ?? ''); ?>">
+          <input type="text" name="beneficiario_cpf" placeholder="CPF *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['beneficiario_cpf'] ?? ''); ?>">
+          <input type="text" name="cep" placeholder="CEP *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['cep'] ?? ''); ?>">
+          <input type="text" name="endereco" placeholder="Endereço *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['endereco'] ?? ''); ?>">
+          <input type="text" name="bairro" placeholder="Bairro" class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['bairro'] ?? ''); ?>">
+          <input type="text" name="cidade" placeholder="Cidade *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['cidade'] ?? ''); ?>">
+          <input type="text" name="estado" placeholder="Estado *" required class="px-3 py-2 border rounded w-full" value="<?php echo htmlspecialchars($old['estado'] ?? ''); ?>">
         </div>
       </section>
 
@@ -134,7 +158,7 @@
     // Helper: mantém somente dígitos
     const onlyDigits = s => (s || '').replace(/\D/g, '');
 
-    // Máscara CPF: 123.456.789-10
+    // Máscaras (não mudadas)
     function maskCPF(v) {
       v = onlyDigits(v).slice(0,11);
       v = v.replace(/(\d{3})(\d)/, '$1.$2');
@@ -143,7 +167,6 @@
       return v;
     }
 
-    // Máscara CNPJ: 66.692.241/0001-57
     function maskCNPJ(v) {
       v = onlyDigits(v).slice(0,14);
       v = v.replace(/(\d{2})(\d)/, '$1.$2');
@@ -153,7 +176,6 @@
       return v;
     }
 
-    // Máscara Telefone: 49 91234-5678 (aceita 10 ou 11 dígitos)
     function maskPhone(v) {
       v = onlyDigits(v);
       if (v.length <= 2) return v;
@@ -166,14 +188,12 @@
       return `${ddd} ${rest.slice(0,5)}-${rest.slice(5,9)}`;
     }
 
-    // Máscara CEP: 12345-678
     function maskCEP(v) {
       v = onlyDigits(v).slice(0,8);
       v = v.replace(/(\d{5})(\d{1,3})$/, '$1-$2');
       return v;
     }
 
-    // Detecta se documento é CPF (<=11) ou CNPJ (>11)
     function maskDocumentoAuto(v) {
       const digits = onlyDigits(v);
       if (digits.length > 11) {
@@ -199,25 +219,22 @@
       });
     }
 
-    // aplica máscaras
     attachMask('documento', maskDocumentoAuto);
     attachMask('beneficiario_cpf', maskCPF);
     attachMask('telefone', maskPhone);
     attachMask('cep', maskCEP);
 
-    // Toggle campos do doador quando anônimo — agora ESCONDE os campos
     const anonymousCheckbox = document.getElementById('anonymousFlag');
     const donorFields = document.getElementById('donorFields');
 
     function applyAnonymousState() {
       const checked = anonymousCheckbox.checked;
 
-      // esconder/mostrar visualmente
       if (checked) {
-        donorFields.classList.add('hidden');
+        donorFields.classList.add('opacity-50', 'pointer-events-none');
         donorFields.setAttribute('aria-hidden', 'true');
       } else {
-        donorFields.classList.remove('hidden');
+        donorFields.classList.remove('opacity-50', 'pointer-events-none');
         donorFields.removeAttribute('aria-hidden');
       }
 
@@ -230,7 +247,7 @@
           else i.dataset._required = '0';
           i.required = false;
           i.disabled = true;
-          i.value = '';
+          // NÃO apagamos os valores para não perder dados do usuário
         } else {
           i.disabled = false;
           i.required = i.dataset._required === '1';
@@ -240,22 +257,21 @@
     }
 
     anonymousCheckbox.addEventListener('change', applyAnonymousState);
-    // inicializa (esconde se já marcado)
     applyAnonymousState();
 
-    // envio: remove máscaras (envia apenas dígitos para campos numéricos)
+    // antes de submeter, remover máscaras (apenas os dígitos serão enviados)
     document.getElementById("doacaoForm").addEventListener("submit", function(e) {
       const docs = ['documento','beneficiario_cpf','telefone','cep'];
       docs.forEach(name => {
         const el = this.querySelector(`[name="${name}"]`);
         if (el && !el.disabled) el.value = onlyDigits(el.value);
       });
-      // se anônimo, garantir flag enviada como '1' (já é)
+      // se anônimo, a checkbox já envia o valor '1'
     });
 
-    // Notificação visual ao submeter
+    // Notificação visual ao submeter (caso exista app)
     document.getElementById("doacaoForm").addEventListener("submit", function() {
-      window.DoaSysApp?.showNotification("Salvando doação...", "info");
+      window.DoaSysApp?.showNotification?.("Salvando doação...", "info");
     });
 
   </script>

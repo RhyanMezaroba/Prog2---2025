@@ -1,35 +1,63 @@
 <?php
 
-require_once __DIR__ . '/../Models/User.php';
+namespace App\Controllers;
 
-class authController
+use App\Models\UserModel;
+use RuntimeException;
+
+class AuthController
 {
-    protected $userModel;
+    protected $UserModel;
     protected $viewsPath;
+    protected $baseRouter = '/DoaSys/App/migration/router.php';
 
     public function __construct()
     {
-        $this->userModel = new User();
-        $this->viewsPath = __DIR__ . '/../../resources/views/auth/';
+        $this->UserModel = new UserModel();
+
+        // Caminho real para: App/Views/
+        $this->viewsPath = realpath(__DIR__ . '/../Views') . DIRECTORY_SEPARATOR;
+
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
     }
 
+    // --------------------------
+    // Renderização de views
+    // --------------------------
     protected function render(string $viewFile, array $data = [])
     {
         extract($data, EXTR_SKIP);
+
         $file = $this->viewsPath . $viewFile . '.php';
+
         if (!file_exists($file)) {
-            throw new \RuntimeException("View not found: {$file}");
+            throw new RuntimeException("View not found: {$file}");
         }
+
         require $file;
+    }
+
+    // --------------------------
+    // Montar URL do router
+    // --------------------------
+    protected function route(string $controller, string $action, array $query = [])
+    {
+        $qs = http_build_query(array_merge([
+            'c' => $controller,
+            'a' => $action
+        ], $query));
+
+        return $this->baseRouter . '?' . $qs;
     }
 
     protected function redirect(string $url = null)
     {
-        $url = $url ?? ($_SERVER['HTTP_REFERER'] ?? '/');
-        header('Location: ' . $url);
+        if ($url === null) {
+            $url = $_SERVER['HTTP_REFERER'] ?? $this->baseRouter;
+        }
+        header("Location: {$url}");
         exit;
     }
 
@@ -45,135 +73,177 @@ class authController
         return $v;
     }
 
-    // Mostra formulário de login
+    // ==================================================
+    //                    LOGIN
+    // ==================================================
+
     public function showLogin()
     {
         $old = $_SESSION['old'] ?? [];
         $errors = $_SESSION['errors'] ?? [];
-        unset($_SESSION['old'], $_SESSION['errors']);
-        $this->render('login', compact('old', 'errors'));
+        $flash = $_SESSION['flash'] ?? [];
+
+        unset($_SESSION['old'], $_SESSION['errors'], $_SESSION['flash']);
+
+        $this->render('Auth/loginAuth', compact('old', 'errors', 'flash'));
     }
 
-    // Processa login (POST)
     public function login()
     {
         $data = $this->sanitizeInput($_POST);
         $errors = $this->validateLogin($data);
+
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $data;
-            $this->redirect();
+            $this->redirect($this->route('auth', 'showLogin'));
         }
 
-        $user = $this->userModel->findByEmail($data['email'] ?? '');
-        if (!$user || !password_verify($data['password'] ?? '', $user['senha'] ?? '')) {
+        $user = $this->UserModel->findByEmail($data['email']);
+
+        if (!$user || !password_verify($data['password'], $user['senha'])) {
             $this->setFlash('error', 'Credenciais inválidas.');
-            $this->redirect();
+            $_SESSION['old'] = ['email' => $data['email']];
+            $this->redirect($this->route('auth', 'showLogin'));
         }
 
-        // Autentica
         $_SESSION['user_id'] = $user['id'];
-        $this->setFlash('success', 'Login realizado.');
-        $this->redirect('/'); // ajustar rota após login
+        $this->setFlash('success', 'Login realizado com sucesso.');
+
+        $this->redirect($this->route('home', 'index'));
     }
 
-    // Mostra formulário de registro
+    // ==================================================
+    //                    REGISTER
+    // ==================================================
+
     public function showRegister()
     {
         $old = $_SESSION['old'] ?? [];
         $errors = $_SESSION['errors'] ?? [];
-        unset($_SESSION['old'], $_SESSION['errors']);
-        $this->render('register', compact('old', 'errors'));
+        $flash = $_SESSION['flash'] ?? [];
+
+        unset($_SESSION['old'], $_SESSION['errors'], $_SESSION['flash']);
+
+        $this->render('Auth/registerAuth', compact('old', 'errors', 'flash'));
     }
 
-    // Processa registro (POST)
     public function register()
     {
         $data = $this->sanitizeInput($_POST);
         $errors = $this->validateRegister($data);
+
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $data;
-            $this->redirect();
+            $this->redirect($this->route('auth', 'showRegister'));
         }
 
-        // evita duplicar email
-        if ($this->userModel->findByEmail($data['email'])) {
+        if ($this->UserModel->findByEmail($data['email'])) {
             $this->setFlash('error', 'E-mail já cadastrado.');
-            $this->redirect();
+            $this->redirect($this->route('auth', 'showRegister'));
         }
 
         $passwordHash = password_hash($data['password'], PASSWORD_DEFAULT);
-        $payload = [
-            'nome' => $data['nome'] ?? null,
-            'email' => $data['email'],
-            'senha' => $passwordHash,
-            'tipo' => $data['tipo'] ?? 'usuario'
-        ];
 
         try {
-            $newId = $this->userModel->create($payload);
-            $_SESSION['user_id'] = $newId;
-            $this->setFlash('success', 'Conta criada.');
-            $this->redirect('/');
+            $userId = $this->UserModel->create([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'senha' => $passwordHash,
+                'tipo' => 'usuario'
+            ]);
+
+            $_SESSION['user_id'] = $userId;
+            $this->setFlash('success', 'Conta criada com sucesso.');
+
+            $this->redirect($this->route('home', 'index'));
+
         } catch (\Exception $e) {
             $this->setFlash('error', 'Erro ao criar conta: ' . $e->getMessage());
-            $this->redirect();
+            $this->redirect($this->route('auth', 'showRegister'));
         }
     }
 
-    // Logout
+    // ==================================================
+    //                    LOGOUT
+    // ==================================================
     public function logout()
     {
         unset($_SESSION['user_id']);
         session_regenerate_id(true);
-        $this->setFlash('success', 'Desconectado.');
-        $this->redirect('/');
+
+        $this->setFlash('success', 'Você saiu da sua conta.');
+
+        $this->redirect($this->route('home', 'index'));
     }
 
-    // Retorna usuário atual ou null
+    // ==================================================
+    //             AUXILIARES DE AUTH
+    // ==================================================
+
     public function currentUser()
     {
         if (!empty($_SESSION['user_id'])) {
-            return $this->userModel->findById($_SESSION['user_id']);
+            return $this->UserModel->find($_SESSION['user_id']);
         }
         return null;
     }
 
-    // Protege rotas: redireciona para login se não autenticado
     public function requireAuth()
     {
         if (!$this->currentUser()) {
             $this->setFlash('error', 'Acesso restrito. Faça login.');
-            $this->redirect('/auth/login');
+            $this->redirect($this->route('auth', 'showLogin'));
         }
     }
 
-    // Helpers
+    public function requireAdmin()
+    {
+        $user = $this->currentUser();
+
+        if (!$user) {
+            $this->setFlash('error', 'Acesso restrito. Faça login.');
+            $this->redirect($this->route('auth', 'showLogin'));
+        }
+
+        if (strtolower($user['tipo']) !== 'admin') {
+            $this->setFlash('error', 'Acesso negado. Requer administrador.');
+            $this->redirect($this->route('home', 'index'));
+        }
+    }
+
+    // ==================================================
+    //                VALIDAÇÃO
+    // ==================================================
+
     protected function sanitizeInput(array $input)
     {
-        $clean = [];
         foreach ($input as $k => $v) {
-            $clean[$k] = is_string($v) ? trim($v) : $v;
+            $input[$k] = is_string($v) ? trim($v) : $v;
         }
-        return $clean;
+        return $input;
     }
 
     protected function validateLogin(array $data)
     {
         $errors = [];
+
         if (empty($data['email'])) {
             $errors['email'] = 'E-mail é obrigatório.';
         }
+
         if (empty($data['password'])) {
             $errors['password'] = 'Senha é obrigatória.';
         }
+
         return $errors;
     }
 
     protected function validateRegister(array $data)
     {
         $errors = [];
+
         if (empty($data['nome'])) {
             $errors['nome'] = 'Nome é obrigatório.';
         }
@@ -181,12 +251,12 @@ class authController
             $errors['email'] = 'E-mail inválido.';
         }
         if (empty($data['password']) || strlen($data['password']) < 6) {
-            $errors['password'] = 'Senha com mínimo de 6 caracteres.';
+            $errors['password'] = 'Senha deve ter no mínimo 6 caracteres.';
         }
-        if (($data['password'] ?? '') !== ($data['password_confirm'] ?? '')) {
-            $errors['password_confirm'] = 'Confirmação de senha não confere.';
+        if ($data['password'] !== ($data['password_confirm'] ?? null)) {
+            $errors['password_confirm'] = 'As senhas não conferem.';
         }
+
         return $errors;
     }
 }
-?>

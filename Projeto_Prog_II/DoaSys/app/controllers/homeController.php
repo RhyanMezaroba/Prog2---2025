@@ -3,7 +3,7 @@
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../Models/User.php';
 
-class homeController extends BaseController
+class HomeController extends BaseController
 {
     protected $userModel;
 
