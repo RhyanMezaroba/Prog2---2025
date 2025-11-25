@@ -1,0 +1,3 @@
+id,usuario_id,beneficiario_nome,beneficiario_cpf,titulo,descricao,categoria,quantidade,valor,cidade,bairro,endereco,cep,status,data_doacao,criado_em
+1,NULL,Aparecida,12345678090,dinheiro,1,dinheiro,1,1.00,videira,bairro,rua,89560011,pendente,2025-11-26,"2025-11-24 22:04:28"
+2,NULL,"Mateus Felipe",73647258124,Computador,"Notebook Acer celeron",eletronicos,1,560.00,Videira,Floresta,"Rua Heitir Junior",93486467,pendente,2025-11-19,"2025-11-24 22:28:38"

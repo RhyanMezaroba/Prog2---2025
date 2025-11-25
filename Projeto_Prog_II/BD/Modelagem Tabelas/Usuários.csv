@@ -1,0 +1,2 @@
+id,nome,email,senha,tipo,documento,criado_em
+1,Admin,admin@teste.com,$2y$10$T2cMzchLUYxoA2P0U5qWwuwFvrtkCFTVqOmnt8mOpr8JJZ1oPxCBi,admin,NULL,"2025-11-24 21:58:39"
