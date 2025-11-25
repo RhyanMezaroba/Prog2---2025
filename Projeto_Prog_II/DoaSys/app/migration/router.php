@@ -1,43 +1,43 @@
 <?php
 session_start();
 
-$controller = isset($_GET['c']) ? preg_replace('/[^a-z0-9_]/i', '', $_GET['c']) : 'home';
-$action     = isset($_GET['a']) ? preg_replace('/[^a-z0-9_]/i', '', $_GET['a']) : 'index';
+// Autoload do Composer
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-$controllerClass = ucfirst($controller) . 'Controller';
+// Sanitiza os parâmetros da URL
+$controller = isset($_GET['c']) ? preg_replace('/[^a-z0-9_]/i', '', strtolower($_GET['c'])) : 'home';
+$action     = isset($_GET['a']) ? preg_replace('/[^a-z0-9_]/i', '', strtolower($_GET['a'])) : 'index';
 
-// Caminho REAL dos seus controllers
-$controllerFile = __DIR__ . '/../Controllers/' . $controllerClass . '.php';
+// Monta o nome completo da classe com namespace
+$controllerClass = "App\\Controllers\\" . ucfirst($controller) . "Controller";
 
-if (!file_exists($controllerFile)) {
-    http_response_code(404);
-    echo "Controller file not found: $controllerFile";
-    exit;
-}
+// Com o autoloader do Composer, não é necessário incluir o arquivo manualmente.
+// O autoloader se encarrega de encontrar e carregar a classe.
+// Removemos as linhas que checam e incluem o arquivo do controller.
 
-require_once $controllerFile;
-
-// A classe deve existir dentro do arquivo
+// Verifica se a classe existe dentro do namespace
 if (!class_exists($controllerClass)) {
-    http_response_code(500);
-    echo "Controller class not found: {$controllerClass}";
-    exit;
-}
-
-$ctrl = new $controllerClass();
-
-// Verifica se o método existe
-if (!method_exists($ctrl, $action)) {
     http_response_code(404);
-    echo "Action not found: {$action}";
+    echo "<h3>Controller class not found:</h3> <p>{$controllerClass}</p>";
     exit;
 }
 
-// Se tiver parâmetro id, passa para o controller
+// Instancia o controlador
+$controllerInstance = new $controllerClass();
+
+// Verifica se a action existe
+if (!method_exists($controllerInstance, $action)) {
+    http_response_code(404);
+    echo "<h3>Action not found:</h3> <p>{$action}</p>";
+    exit;
+}
+
+// Verifica se há um ID
 $id = $_GET['id'] ?? null;
 
+// Chama a action levando em conta o ID
 if ($id !== null) {
-    $ctrl->$action($id);
+    $controllerInstance->$action($id);
 } else {
-    $ctrl->$action();
+    $controllerInstance->$action();
 }

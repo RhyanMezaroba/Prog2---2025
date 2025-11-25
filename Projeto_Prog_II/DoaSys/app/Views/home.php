@@ -45,7 +45,7 @@
                     Cadastrar Doação
                 </a>
                 <!-- Botão Ver Doações -->
-                <a href="/DoaSys/App/Views/Donations/List.php"
+                <a href="/DoaSys/App/migration/router.php?c=donation&a=index"
                     class="bg-secondary hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105">
                     <i data-feather="search" class="inline mr-2"></i>
                     Ver Doações

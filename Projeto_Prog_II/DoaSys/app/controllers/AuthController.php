@@ -125,7 +125,7 @@ class AuthController
 
         unset($_SESSION['old'], $_SESSION['errors'], $_SESSION['flash']);
 
-        $this->render('Auth/registerAuth', compact('old', 'errors', 'flash'));
+        $this->render('Auth/register', compact('old', 'errors', 'flash'));
     }
 
     public function register()
@@ -151,7 +151,7 @@ class AuthController
                 'nome' => $data['nome'],
                 'email' => $data['email'],
                 'senha' => $passwordHash,
-                'tipo' => 'usuario'
+                'tipo' => $data['tipo'] ?? 'usuario'
             ]);
 
             $_SESSION['user_id'] = $userId;

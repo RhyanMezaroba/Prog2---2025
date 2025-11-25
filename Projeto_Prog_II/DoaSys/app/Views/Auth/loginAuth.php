@@ -32,36 +32,43 @@ $old = $old ?? [];
         .btn-secondary { background:#6c757d; }
     </style>
 </head>
-<body>
+    <body>
 
-    <h1>Entrar</h1>
+        <h1>Entrar</h1>
 
-    <?php if (!empty($flash['success'])): ?>
-        <div class="alert alert-success"><?php echo htmlspecialchars($flash['success']); ?></div>
-    <?php endif; ?>
+        <?php if (!empty($flash['success'])): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($flash['success']); ?></div>
+        <?php endif; ?>
 
-    <?php if (!empty($flash['error'])): ?>
-        <div class="alert alert-error"><?php echo htmlspecialchars($flash['error']); ?></div>
-    <?php endif; ?>
+        <?php if (!empty($flash['error'])): ?>
+            <div class="alert alert-error"><?php echo htmlspecialchars($flash['error']); ?></div>
+        <?php endif; ?>
 
-    <form method="post" action="/auth/login">
-        <div class="form-group">
-            <label for="email">E-mail</label>
-            <input id="email" name="email" type="email" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>">
-            <?php if (!empty($errors['email'])): ?><div class="error"><?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
-        </div>
+        <!-- AJUSTADO: envia para o router -->
+        <form method="post" action="/DoaSys/App/migration/router.php?c=auth&a=login">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>">
+                <?php if (!empty($errors['email'])): ?><div class="error"><?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
+            </div>
 
-        <div class="form-group">
-            <label for="password">Senha</label>
-            <input id="password" name="password" type="password">
-            <?php if (!empty($errors['password'])): ?><div class="error"><?php echo htmlspecialchars($errors['password']); ?></div><?php endif; ?>
-        </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input id="password" name="password" type="password">
+                <?php if (!empty($errors['password'])): ?><div class="error"><?php echo htmlspecialchars($errors['password']); ?></div><?php endif; ?>
+            </div>
 
-        <div class="actions">
-            <button type="submit" class="btn">Entrar</button>
-            <a href="/auth/register" class="btn btn-secondary" style="text-decoration:none;margin-left:8px;display:inline-block;padding-top:8px;">Criar conta</a>
-        </div>
-    </form>
+            <div class="actions">
+                <button type="submit" class="btn">Entrar</button>
 
-</body>
+                <!-- AJUSTADO: link passa pelo router -->
+                <a href="/DoaSys/App/migration/router.php?c=auth&a=showRegister"
+                class="btn btn-secondary"
+                style="text-decoration:none;margin-left:8px;display:inline-block;padding-top:8px;">
+                Criar conta
+                </a>
+            </div>
+        </form>
+
+    </body>
 </html>

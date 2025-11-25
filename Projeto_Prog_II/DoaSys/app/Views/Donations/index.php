@@ -1,5 +1,3 @@
-<?php include __DIR__ . '/../partials/header.php'; ?>
-
 <style>
     .donations-container {
         max-width: 900px;
@@ -59,7 +57,7 @@
 
     <h1>Lista de Doações</h1>
 
-    <a class="btn-new" href="/donations/create">+ Nova Doação</a>
+    <a class="btn-new" href="/DoaSys/App/migration/router.php?c=donation&a=create">+ Nova Doação</a>
 
     <?php if (empty($donations)): ?>
         <p>Nenhuma doação cadastrada ainda.</p>
@@ -105,5 +103,3 @@
     <?php endif; ?>
 
 </div>
-
-<?php include __DIR__ . '/../partials/footer.php'; ?>

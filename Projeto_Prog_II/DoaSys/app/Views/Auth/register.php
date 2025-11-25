@@ -71,8 +71,10 @@ if (isset($_SESSION['flash'])) {
         <div class="form-group">
             <label for="tipo">Tipo de usuário</label>
             <select id="tipo" name="tipo">
-                <option value="usuario" <?php echo (isset($old['tipo']) && $old['tipo'] === 'usuario') ? 'selected' : ''; ?>>Usuário</option>
-                <option value="admin" <?php echo (isset($old['tipo']) && $old['tipo'] === 'admin') ? 'selected' : ''; ?>>Administrador</option>
+                <option value="cliente">Cliente</option>
+                <option value="instituicao">Instituição</option>
+                <option value="anonimo">Anônimo</option>
+                <option value="admin">Administrador</option>
             </select>
         </div>
 

@@ -1,30 +1,26 @@
 <?php
 
-use App\Controllers\AuthController;
-// filepath: c:\laragon\www\DoaSys\App\Controllers\DonationController.php
-require_once __DIR__ . '/baseController.php';
-require_once __DIR__ . '/../Models/donationModel.php';
-require_once __DIR__ . '/authController.php';
+namespace App\Controllers;
 
-class DonationController extends baseController
+use App\Core\BaseController;
+use App\Controllers\AuthController;
+use App\Models\DonationModel;
+
+class DonationController extends BaseController
 {
     protected $model;
-    protected $viewsPath;
     protected $auth;
-
-    // Caminho correto do router
     protected $router = '/DoaSys/App/migration/router.php';
 
     public function __construct()
     {
         parent::__construct();
+
         $this->model = new DonationModel();
+        $this->auth  = new AuthController();
 
-        // Ajuste correto para sua estrutura
+        // Caminho correto das Views
         $this->setViewsPath(__DIR__ . '/../Views/donations/');
-
-        // controller de autenticação
-        $this->auth = new AuthController();
     }
 
     /**
@@ -34,11 +30,33 @@ class DonationController extends baseController
     {
         $this->auth->requireAdmin();
 
-        $donations = $this->model->getAll();
-        $success = $this->getFlash('success');
-        $error = $this->getFlash('error');
+        // Extrai parâmetros de filtro e paginação da URL
+        $tipo       = $_GET['tipo'] ?? null;
+        $dataInicio = $_GET['dat-inicio'] ?? null;
+        $dataFim    = $_GET['data_fim'] ?? null;
+        $page       = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $perPage    = 10; // Itens por página
 
-        $this->render('index', compact('donations', 'success', 'error'));
+        // Obtém os dados paginados e filtrados
+        $pagedData = $this->model->getPaged($page, $perPage, $tipo, $dataInicio, $dataFim);
+
+        $donations  = $pagedData['data'];
+        $total      = $pagedData['total'];
+        $totalPages = (int)ceil($total / $perPage);
+
+        $success = $this->getFlash('success');
+        $error   = $this->getFlash('error');
+
+        $this->render('list', compact(
+            'donations',
+            'success',
+            'error',
+            'tipo',
+            'dataInicio',
+            'dataFim',
+            'page',
+            'totalPages'
+        ));
     }
 
     /**
@@ -48,7 +66,7 @@ class DonationController extends baseController
     {
         $this->auth->requireAdmin();
 
-        $old = $_SESSION['old'] ?? [];
+        $old    = $_SESSION['old']    ?? [];
         $errors = $_SESSION['errors'] ?? [];
 
         unset($_SESSION['old'], $_SESSION['errors']);
@@ -57,31 +75,29 @@ class DonationController extends baseController
     }
 
     /**
-     * SALVAR NOVA DOAÇÃO — POST — exige admin
+     * SALVAR NOVA DOAÇÃO
      */
     public function store()
     {
         $this->auth->requireAdmin();
 
-        $data = $this->sanitizeInput($_POST);
-
-        // validações
+        $data   = $this->sanitizeInput($_POST);
         $errors = $this->validate($data);
 
-        if (!empty($errors)) {
+        if ($errors) {
             $this->setErrors($errors);
             $this->setOld($data);
             $this->redirect($this->router . '?c=donation&a=create');
         }
 
         try {
-            $insertId = $this->model->create($data);
+            $id = $this->model->create($data);
 
-            $this->setFlash('success', 'Doação criada com sucesso (ID: ' . $insertId . ').');
+            $this->setFlash('success', "Doação criada com sucesso (ID: {$id}).");
             $this->redirect($this->router . '?c=donation&a=index');
 
         } catch (\Exception $e) {
-            $this->setFlash('error', 'Erro ao salvar: ' . $e->getMessage());
+            $this->setFlash('error', 'Erro: ' . $e->getMessage());
             $this->redirect($this->router . '?c=donation&a=create');
         }
     }
@@ -98,7 +114,7 @@ class DonationController extends baseController
             $this->redirect($this->router . '?c=donation&a=index');
         }
 
-        $old = $_SESSION['old'] ?? (array)$donation;
+        $old    = $_SESSION['old']    ?? (array)$donation;
         $errors = $_SESSION['errors'] ?? [];
 
         unset($_SESSION['old'], $_SESSION['errors']);
@@ -107,17 +123,17 @@ class DonationController extends baseController
     }
 
     /**
-     * ATUALIZAR DOAÇÃO — POST
+     * ATUALIZAR DOAÇÃO
      */
     public function update($id)
     {
-        $data = $this->sanitizeInput($_POST);
+        $data   = $this->sanitizeInput($_POST);
+        $errors = $this->validate($data);
 
-        $errors = $this->validate($data, true);
-
-        if (!empty($errors)) {
+        if ($errors) {
             $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = $data;
+            $_SESSION['old']    = $data;
+
             $this->redirect($this->router . "?c=donation&a=edit&id={$id}");
         }
 
@@ -128,13 +144,13 @@ class DonationController extends baseController
             $this->redirect($this->router . '?c=donation&a=index');
 
         } catch (\Exception $e) {
-            $this->setFlash('error', 'Erro ao atualizar: ' . $e->getMessage());
+            $this->setFlash('error', 'Erro: ' . $e->getMessage());
             $this->redirect($this->router . "?c=donation&a=edit&id={$id}");
         }
     }
 
     /**
-     * DELETAR DOAÇÃO
+     * DELETAR
      */
     public function delete($id)
     {
@@ -145,38 +161,36 @@ class DonationController extends baseController
             $this->redirect($this->router . '?c=donation&a=index');
 
         } catch (\Exception $e) {
-            $this->setFlash('error', 'Erro ao remover: ' . $e->getMessage());
+            $this->setFlash('error', 'Erro: ' . $e->getMessage());
             $this->redirect($this->router . '?c=donation&a=index');
         }
     }
 
-    // --- Helpers ---
+    // Helpers
     protected function sanitizeInput(array $input): array
     {
-        $clean = [];
         foreach ($input as $k => $v) {
-            $clean[$k] = is_string($v) ? trim($v) : $v;
+            $input[$k] = is_string($v) ? trim($v) : $v;
         }
-        return $clean;
+        return $input;
     }
 
-    protected function validate(array $data, bool $updating = false)
+    protected function validate(array $data)
     {
         $errors = [];
 
         if (empty($data['titulo'])) {
-            $errors['titulo'] = 'O campo título é obrigatório.';
+            $errors['titulo'] = 'O título é obrigatório.';
         }
 
-        if (isset($data['quantidade']) && $data['quantidade'] !== '' && !is_numeric($data['quantidade'])) {
-            $errors['quantidade'] = 'Quantidade precisa ser um número.';
+        if ($data['quantidade'] !== '' && !is_numeric($data['quantidade'])) {
+            $errors['quantidade'] = 'Quantidade inválida.';
         }
 
-        if (isset($data['valor']) && $data['valor'] !== '' && !is_numeric(str_replace(',', '.', $data['valor']))) {
+        if ($data['valor'] !== '' && !is_numeric(str_replace(',', '.', $data['valor']))) {
             $errors['valor'] = 'Valor inválido.';
         }
 
         return $errors;
     }
 }
-?>

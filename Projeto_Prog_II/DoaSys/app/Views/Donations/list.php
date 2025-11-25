@@ -1,17 +1,7 @@
 <?php
-require_once __DIR__ . '/../../Models/donationModel.php';
-$donationModel = new donationModel();
-$tipo = isset($_GET['tipo']) && $_GET['tipo'] !== '' ? trim($_GET['tipo']) : null;
-$dataInicio = isset($_GET['data_inicio']) && $_GET['data_inicio'] !== '' ? trim($_GET['data_inicio']) : null;
-$dataFim = isset($_GET['data_fim']) && $_GET['data_fim'] !== '' ? trim($_GET['data_fim']) : null;
 
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$perPage = 10; // itens por página
+// Os dados já vêm do controller
 
-$paged = $donationModel->getPaged($page, $perPage, $tipo, $dataInicio, $dataFim);
-$donations = $paged['data'];
-$total = $paged['total'];
-$totalPages = (int)ceil($total / $perPage);
 ?>
 
 <!DOCTYPE html>
@@ -77,42 +67,44 @@ $totalPages = (int)ceil($total / $perPage);
 
         <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-8 card-hover">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form method="get" action="/DoaSys/App/migration/router.php">
+                <input type="hidden" name="c" value="donation">
+                <input type="hidden" name="a" value="index">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <div class="form-group">
-                    <label class="form-label">Tipo</label>
-                    <select id="filtroTipo" name="tipo" class="form-input w-full">
-                        <option value="">Todos os tipos</option>
-                        <option value="alimentos" <?php echo ($tipo==='alimentos')? 'selected' : ''; ?>>Alimentos</option>
-                        <option value="roupas" <?php echo ($tipo==='roupas')? 'selected' : ''; ?>>Roupas</option>
-                        <option value="medicamentos" <?php echo ($tipo==='medicamentos')? 'selected' : ''; ?>>Medicamentos</option>
-                        <option value="dinheiro" <?php echo ($tipo==='dinheiro')? 'selected' : ''; ?>>Dinheiro</option>
-                    </select>
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select id="filtroTipo" name="tipo" class="form-input w-full">
+                            <option value="">Todos os tipos</option>
+                            <option value="alimentos" <?php echo ($tipo==='alimentos')? 'selected' : ''; ?>>Alimentos</option>
+                            <option value="roupas" <?php echo ($tipo==='roupas')? 'selected' : ''; ?>>Roupas</option>
+                            <option value="medicamentos" <?php echo ($tipo==='medicamentos')? 'selected' : ''; ?>>Medicamentos</option>
+                            <option value="dinheiro" <?php echo ($tipo==='dinheiro')? 'selected' : ''; ?>>Dinheiro</option>
+                            <option value="moveis" <?php echo ($tipo==='moveis')? 'selected' : ''; ?>>Móveis</option>
+                            <option value="eletronicos" <?php echo ($tipo==='eletronicos')? 'selected' : ''; ?>>Eletrônicos</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Data Inicial</label>
+                        <input id="filtroDataInicio" name="dat-inicio" type="date" value="<?php echo htmlspecialchars($dataInicio ?? ''); ?>" class="form-input w-full">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Data Final</label>
+                        <input id="filtroDataFim" name="data_fim" type="date" value="<?php echo htmlspecialchars($dataFim ?? ''); ?>" class="form-input w-full">
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Data Inicial</label>
-                    <input id="filtroDataInicio" name="data_inicio" type="date" value="<?php echo htmlspecialchars($dataInicio ?? ''); ?>" class="form-input w-full">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Data Final</label>
-                    <input id="filtroDataFim" name="data_fim" type="date" value="<?php echo htmlspecialchars($dataFim ?? ''); ?>" class="form-input w-full">
-                </div>
-
-            </div>
-
-            <div class="flex justify-end gap-4 mt-4">
-                <form method="get" class="inline">
-                    <input type="hidden" name="tipo" id="formTipoHidden" value="<?php echo htmlspecialchars($tipo ?? ''); ?>">
-                    <input type="hidden" name="data_inicio" id="formDataInicioHidden" value="<?php echo htmlspecialchars($dataInicio ?? ''); ?>">
-                    <input type="hidden" name="data_fim" id="formDataFimHidden" value="<?php echo htmlspecialchars($dataFim ?? ''); ?>">
+                <div class="flex justify-end gap-4 mt-4">
                     <button type="submit" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-300">
                         <i data-feather="filter" class="inline mr-2"></i>
                         Aplicar Filtros
                     </button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
 
         <!-- LISTA DE DOAÇÕES — RENDERIZADA NO SERVIDOR -->
@@ -212,11 +204,6 @@ $totalPages = (int)ceil($total / $perPage);
 
     <script>
         feather.replace();
-
-        // mantém os valores dos filtros no formulário visível
-        document.getElementById('filtroTipo')?.addEventListener('change', function(e){ document.getElementById('formTipoHidden').value = this.value; });
-        document.getElementById('filtroDataInicio')?.addEventListener('change', function(e){ document.getElementById('formDataInicioHidden').value = this.value; });
-        document.getElementById('filtroDataFim')?.addEventListener('change', function(e){ document.getElementById('formDataFimHidden').value = this.value; });
     </script>
 
 </body>
